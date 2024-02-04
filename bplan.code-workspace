@@ -1,0 +1,53 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.readonlyInclude": {
+			"deps/**"                    : true,
+			"**/ChernoOpenGL-CMake/**"   : true,
+			"**/MSVC/**/include/**"      : true,
+		},
+
+		"terminal.integrated.env.windows": {
+			"AWS_REGION": "us-east-2",
+			"AWS_ID": "my_id"
+		},
+
+		"editor.wordWrap": "on",
+		"editor.formatOnPaste": true,
+		"editor.accessibilitySupport": "off",
+		"window.zoomLevel": 0.25,
+		"terminal.integrated.tabs.focusMode": "singleClick",
+		"terminal.integrated.accessibleViewFocusOnCommandExecution": false,
+		"debug.openExplorerOnEnd": true,
+		"debug.focusEditorOnBreak": false,
+		"accessibility.hideAccessibleView": true,
+		"extensions.ignoreRecommendations": true,
+
+		"C_Cpp.inlayHints.autoDeclarationTypes.enabled": false,
+		"C_Cpp.inlayHints.referenceOperator.enabled"   : false,
+		"C_Cpp.inlayHints.parameterNames.enabled"      : false,
+		"C_Cpp.inlayHints.parameterNames.suppressWhenArgumentContainsName": true,
+
+		"cmake.parallelJobs": 4,
+
+		"typescript.surveys.enabled": false,
+		"workbench.enableExperiments": false,
+		"workbench.settings.enableNaturalLanguageSearch": false,
+		"typescript.disableAutomaticTypeAcquisition": true,
+		"update.enableWindowsBackgroundUpdates": false,
+		"telemetry.telemetryLevel": "crash",
+		"update.mode": "none",
+		"files.associations": {
+			"*.cppm": "cpp",
+			"iostream": "cpp",
+			"algorithm": "cpp",
+			"format": "cpp",
+			"cstdint": "cpp"
+		},
+		//"C_Cpp.default.forcedInclude": ["${workspaceFolder}/src/config.hpp"],
+	}
+}
