@@ -1,0 +1,32 @@
+// https://code.visualstudio.com/docs/editor/tasks
+{
+  "version": "2.0.0",
+  "type": "shell",
+  "command": "go",
+  "cwd": "${workspaceFolder}",
+  "problemMatcher": [ "$go" ],
+  "presentation": {
+    "clear": true,
+    "reveal": "silent",
+  },
+  "tasks": [
+    { /* build: bplan */
+      "label": "build-bplan",
+      "group": "build",
+      "args": [
+        "build",
+        "-v", "-x", "-gcflags='all=-N -l'", "-ldflags='-extldflags=-Wl,-static,-allow-multiple-definition'",
+        "-o=bplan",
+        "./cmd/bplan/"
+      ],
+      "windows": {
+        "args": [
+          "build",
+          "-v", "-x", "-gcflags='all=-N -l'", //"-ldflags='-extldflags=-Wl,-static,-allow-multiple-definition'",
+          "-o='bplan.exe'",
+          "./cmd/bplan/"
+        ],
+      }
+    },
+  ],
+}

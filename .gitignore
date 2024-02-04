@@ -1,0 +1,59 @@
+# Test binary, built with `go test -c`
+*.test
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+# Go workspace file
+go.work
+
+# IDE files
+
+## Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+## vs code:
+*.code-workspace
+.vscode/**
+#!.vscode/tasks.json
+#!.vscode/launch.json
+#!.vscode/settings.json
+#!.vscode/extensions.json
+
+# Artifacts
+## files and binaries:
+*.[ao]
+*.so
+*.exe
+*.exe~
+*.dll
+*.pdb
+*.ilk
+*.log
+*.ini
+*.dylib
+
+## executables
+/app
+/debug
+/bplan
+
+# 1.Windows/Linux/... file- 2.copys/duplicates or 3.`_<commented>` files
+_*
+*.[1-9]
+*([1-9])*
+* copy*
+*- copy*
+
+# OS Generated Files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.Trash-*
+$RECYCLE.BIN/
+.TemporaryItems
+ehthumbs.db
+Thumbs.db

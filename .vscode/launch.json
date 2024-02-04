@@ -1,0 +1,17 @@
+// https://code.visualstudio.com/docs/editor/debugging#_launchjson-attributes
+{
+  "version": "0.2.0",
+  "configurations": [
+    { /* Debug `bplan` executable (faster launch + visible build output in terminal) */
+      "name": "bplan",
+      "type": "go",
+      "request": "launch",
+      "mode": "exec",
+      "preLaunchTask": "build-bplan",
+      "program": "${workspaceRoot}/bplan",
+      "windows": {
+        "program": "${workspaceFolder}/bplan.exe"
+      },
+    },
+  ]
+}
