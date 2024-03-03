@@ -1,0 +1,87 @@
+{
+  "version": 5,
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir":  "${sourceDir}/out/build/${presetName}",
+      "installDir": "${sourceDir}/out/install/${presetName}",
+      "environment": {
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "MinSizeRel"
+      }
+    },
+    {
+      "name": "windows-base",
+      "inherits": "base",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_C_COMPILER":   "cl",
+        "CMAKE_CXX_COMPILER": "cl",
+        "_FLAGS_COMPILE_1_": "/Wall;/external:W0;/external:anglebrackets;/wd5045"
+      },
+      "environment": { "_FLAGS_COMPILE_1_UNUSED_": "/wd4514;/wd4820" },
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" }
+    },
+    {
+      "name": "msvc-dbg",
+      "displayName": "0. MSVC - debug",
+      "inherits": "windows-base",
+      "architecture": { "strategy": "external", "value":      "x64" },
+      "toolset":      { "strategy": "external", "value": "host=x64" },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "_FLAGS_COMPILE_2_": "/EHscr;/sdl;/analyze"
+      }
+    },
+    {
+      "name": "linux-base",
+      "inherits": "base",
+      "hidden": true,
+      "cacheVariables": {
+      }
+    },
+    {
+      "name": "gcc-base",
+      "inherits": "linux-base",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_C_COMPILER":   "gcc",
+        "CMAKE_CXX_COMPILER": "g++",
+        "_FLAGS_COMPILE_1_": "-fmax-errors=1;-Wall;-Wextra;-pedantic;-Wvla;-Wreorder;-Wnon-virtual-dtor;-Weffc++;-Wold-style-cast;-Woverloaded-virtual;-Wsynth"
+      }
+    },
+    {
+      "name": "gcc-dbg",
+      "displayName": "1. GCC - debug",
+      "inherits": "gcc-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "_FLAGS_COMPILE_2_": "-g;-O"
+      }
+    },
+    {
+      "name": "gcc-san",
+      "displayName": "1. GCC - sanitize",
+      "inherits": "gcc-base",
+      "condition": { "type": "notEquals", "lhs": "${hostSystemName}", "rhs": "Windows" },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "_FLAGS_COMPILE_2_": "-g;-O;-fsanitize=address,undefined"
+      }
+    },
+    {
+      "name": "clang",
+      "displayName": "2. Clang",
+      "inherits": "linux-base",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER":   "clang",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "_FLAGS_COMPILE_1_": "-ferror-limit=1;-ftemplate-backtrace-limit=5;-fno-show-column;-Wall;-Wextra;-pedantic"
+      }
+    }
+  ]
+}
