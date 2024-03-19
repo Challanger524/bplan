@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.26)
 
-set(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "" FORCE)
+set(CMAKE_VERBOSE_MAKEFILE OFF CACHE BOOL "" FORCE)
 
 project (bplan  VERSION       0.1
                 DESCRIPTION  "Budget Planner with ImGui"
@@ -25,6 +25,12 @@ set_target_properties     (${PROJECT_NAME} PROPERTIES
   CXX_STANDARD_REQUIRED ON
   #RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}$<0:>" # deal with resource depsendencies
 )
+
+# flags: mutual compiler & linker
+target_compile_options(${PROJECT_NAME} PRIVATE "$<$<BOOL:_FLAGS_COMP_LINK_>:${_FLAGS_COMP_LINK_}>")
+target_link_options   (${PROJECT_NAME} PRIVATE "$<$<BOOL:_FLAGS_COMP_LINK_>:${_FLAGS_COMP_LINK_}>")
+# flags: linker
+target_link_options   (${PROJECT_NAME} PRIVATE "$<$<BOOL:_FLAGS_LINKER_>:${_FLAGS_LINKER_}>")
 
 # Setup libraries
 find_package(OpenGL REQUIRED)
