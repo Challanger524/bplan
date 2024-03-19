@@ -59,7 +59,7 @@
       "inherits": "gcc-base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "_FLAGS_COMPILE_2_": "-g;-O"
+        "_FLAGS_COMPILE_2_": "-g3;-Og"
       }
     },
     {
@@ -69,18 +69,36 @@
       "condition": { "type": "notEquals", "lhs": "${hostSystemName}", "rhs": "Windows" },
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "_FLAGS_COMPILE_2_": "-g;-O;-fsanitize=address,undefined"
+        "_FLAGS_COMPILE_2_": "-g3;-Og;-fsanitize=address,undefined"
       }
     },
     {
-      "name": "clang",
-      "displayName": "2. Clang",
+      "name": "clang-base",
       "inherits": "linux-base",
+      "hidden": true,
       "cacheVariables": {
         "CMAKE_C_COMPILER":   "clang",
         "CMAKE_CXX_COMPILER": "clang++",
-        "CMAKE_BUILD_TYPE": "Debug",
         "_FLAGS_COMPILE_1_": "-ferror-limit=1;-ftemplate-backtrace-limit=5;-fno-show-column;-Wall;-Wextra;-pedantic"
+      }
+    },
+    {
+      "name": "clang-dbg",
+      "displayName": "2. Clang - debug",
+      "inherits": "clang-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "_FLAGS_COMPILE_2_": "-g3;-O0"
+      }
+    },
+    {
+      "name": "clang-san",
+      "displayName": "2. Clang - sanitize",
+      "inherits": "clang-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "_FLAGS_COMPILE_2_": "-g3;-O0;-fno-omit-frame-pointer;-fno-optimize-sibling-calls",
+        "_FLAGS_COMP_LINK_" : "-fsanitize=address"
       }
     }
   ]
