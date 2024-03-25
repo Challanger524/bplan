@@ -2,8 +2,7 @@
 #error "./config.hpp" not force included // See "./config.hpp" for details
 #endif
 
-#include "int/imgui/forms/main_full-window_top-dockspaced.hpp"
-#include "int/imgui/forms/main_topfull_window_dockspaced.hpp"
+#include "app.hpp"
 
 #include "int/imgui/tools.hpp"
 #include "int/imgui/forms.hpp"
@@ -48,7 +47,7 @@ int main()
 	ImGui::CreateContext();
 	ImGuiIO &io = ImGui::GetIO();
 
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	//io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	//io.IniFilename = nullptr;
@@ -80,10 +79,11 @@ int main()
 	std::cout << std::endl;
 
 	//------------------------ Main Loop: data --------------------------------
-	bool show_demo_window = true;
+	App app;
 	//------------------------ Main Loop: loop --------------------------------
 	while (!glfwWindowShouldClose(window))
 	{
+		// - - - - - - - - - - main loop: Beginning - - - - - - - - - - - - - -
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -106,48 +106,10 @@ int main()
 			glfwSetWindowTitle(window, animaTitleMain);
 		}
 #endif
+		// - - - - - - - - - - main loop: Executing - - - - - - - - - - - - - -
+		app();
 
-#ifdef MAIN_WINDOW_DOCKSPACED
-		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
-		{
-			const ImGuiID docspMainID = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
-			//const ImGuiID dockspaceMainViewportId = MainFullWindowTopDockspaced();
-			//const ImGuiID dockspaceMainViewportId = MainTopfullWindowDockspaced();
-		}
-#endif
-
-		if (show_demo_window)
-			ImGui::ShowDemoWindow(&show_demo_window);
-
-		//ImGui::SetNextWindowDockID(dockspaceMainViewportId, ImGuiCond_Once);
-		if (ImGui::Begin("Window"))
-		{
-			static float f = 0.0f;
-			static int counter = 0;
-			static ImVec4 clear_color(0.45f, 0.55f, 0.60f, 1.00f);
-
-			ImGui::Text("This is some useful text.");
-			ImGui::Checkbox("Demo Window", &show_demo_window);
-			ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-			ImGui::ColorEdit3("clear color", &clear_color.x);
-
-			if (ImGui::Button("Button"))
-				counter++;
-			ImGui::SameLine();
-			ImGui::Text("counter = %d", counter);
-			if (ImGui::Button("Show Demo Window"))
-				show_demo_window = true;
-
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-		} ImGui::End();
-
-		{ // render frame stats
-			static char framestats[64];
-			snprintf(framestats, sizeof(framestats), "%5d(%c) %4.fms %2.ffps", ImGui::GetFrameCount(), "|/-\\"[scast<uint>(ImGui::GetTime() * 3) & 3u], 1000.0f / io.Framerate, io.Framerate);
-			ImGui::GetForegroundDrawList()->AddText(CalcAlignBottomRight(framestats, ImGui::GetMainViewport()->WorkSize), IM_COL32_WHITE, framestats);
-		}
-
-		// main: loop: Finalize
+		// - - - - - - - - - - main loop: Ending  - - - - - - - - - - - - - - -
 		ImGui::Render();
 		glClear(GL_COLOR_BUFFER_BIT);
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -160,6 +122,8 @@ int main()
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
+		// - - - - - - - - - - loop: Idling  - - - - - - - - - - - - - - - - -
 		//static unsigned short frame_extra = 0;
 		//glfwWaitEvents();
 		//if (++frame_extra > 2) { frame_extra = 0; glfwWaitEvents(); }
@@ -167,6 +131,7 @@ int main()
 		//if (++frame_extra > 2) { frame_extra = 0; glfwWaitEventsTimeout(1.0f); }
 	}
 
+	//------------------------ Deinit: all ------------------------------------
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
