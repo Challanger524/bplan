@@ -14,6 +14,10 @@
 
 #define IMGUI_DEFINE_MATH_OPERATORS // Enable operator overloads for ImGui (like: `ImVec2`)
 
+// `Dear ImGui` namespace pre-declaration (to alias it in the next line)
+namespace      ImGui {}
+namespace im = ImGui; // global alias for `ImGui::` namespace
+
 #include <stdint.h>
 using ushort = unsigned short;
 using ulong  = unsigned long long;

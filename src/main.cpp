@@ -4,16 +4,12 @@
 
 #include "app.hpp"
 
-#include "int/imgui/tools.hpp"
-#include "int/imgui/forms.hpp"
-
 #include <GLFW/glfw3.h>
 #include <imgui/imgui.h>
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
 
 #include <iostream>
-#include <stdio.h>
 
 int main()
 {
@@ -51,14 +47,15 @@ int main()
 	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 	//io.IniFilename = nullptr;
-	io.LogFilename = nullptr;
+	//io.LogFilename = nullptr;
 
 	//ImGui::StyleColorsDark();
 	ImGui::StyleColorsClassic();
 
 	// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
-	if (ImGuiStyle &style = ImGui::GetStyle(); io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
+		ImGuiStyle &style = ImGui::GetStyle();
 		style.WindowRounding = 0.0f;
 		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 	}
@@ -121,14 +118,8 @@ int main()
 		}
 
 		glfwSwapBuffers(window);
+		glfwWaitEventsTimeout(1.0f); // idling
 		glfwPollEvents();
-
-		// - - - - - - - - - - loop: Idling  - - - - - - - - - - - - - - - - -
-		//static unsigned short frame_extra = 0;
-		//glfwWaitEvents();
-		//if (++frame_extra > 2) { frame_extra = 0; glfwWaitEvents(); }
-		glfwWaitEventsTimeout(1.0f);
-		//if (++frame_extra > 2) { frame_extra = 0; glfwWaitEventsTimeout(1.0f); }
 	}
 
 	//------------------------ Deinit: all ------------------------------------

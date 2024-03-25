@@ -3,6 +3,7 @@
 class App
 {
 bool show_demo_window {true};
+bool showMainViewportMenuBar {true};
 
 public:
 	~App() {}
@@ -13,6 +14,10 @@ public:
 	App  operator=(      App&&) = delete;
 	App& operator=(const App& ) = delete;
 
-	// Main functor (function) of this application
+	// Main _apping_ functor (function) of this `App`
 	void operator()(void);
+
+private:
+	void MainViewportMenuBar();
+	void MainWindow();
 };
