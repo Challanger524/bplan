@@ -2,6 +2,10 @@
 
 #include <imgui/imgui.h>
 
+#ifndef MAIN_WINDOW_NOT_DOCKSPACED
+#define MAIN_WINDOW_NOT_DOCKSPACED
+#endif
+
 inline void MainFullWindow()
 {
 	static bool use_work_area = true;
