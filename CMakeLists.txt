@@ -19,13 +19,15 @@ list(FILTER SOURCE_FILES_ EXCLUDE REGEX ".*\\/_.*\\..*")
 add_executable            (${PROJECT_NAME} ${SOURCE_FILES_})
 target_include_directories(${PROJECT_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/src")
 target_precompile_headers (${PROJECT_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/src/config.hpp") # force include to all source files
-target_compile_options    (${PROJECT_NAME} PRIVATE "${_FLAGS_COMPILE_1_};${_FLAGS_COMPILE_2_}")
 set_target_properties     (${PROJECT_NAME} PROPERTIES
   CXX_STANDARD          23
   CXX_STANDARD_REQUIRED ON
   #RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}$<0:>" # deal with resource depsendencies
 )
 
+# Compile flags (provider: CMakePresets.json)
+target_compile_options(${PROJECT_NAME} PRIVATE "$<$<BOOL:_FLAGS_COMPILE_0_>:${_FLAGS_COMPILE_0_}>")
+target_compile_options(${PROJECT_NAME} PRIVATE        "${_FLAGS_COMPILE_1_};${_FLAGS_COMPILE_2_}")
 # flags: mutual compiler & linker
 target_compile_options(${PROJECT_NAME} PRIVATE "$<$<BOOL:_FLAGS_COMP_LINK_>:${_FLAGS_COMP_LINK_}>")
 target_link_options   (${PROJECT_NAME} PRIVATE "$<$<BOOL:_FLAGS_COMP_LINK_>:${_FLAGS_COMP_LINK_}>")
