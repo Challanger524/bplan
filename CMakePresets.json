@@ -41,6 +41,7 @@
       "inherits": "base",
       "hidden": true,
       "cacheVariables": {
+        "_FLAGS_COMPILE_0_": "-fno-show-column;-ftemplate-backtrace-limit=5;-Wall;-Wextra;-Wpedantic;-Wold-style-cast;-Wreorder;-Woverloaded-virtual"
       }
     },
     {
@@ -50,7 +51,7 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER":   "gcc",
         "CMAKE_CXX_COMPILER": "g++",
-        "_FLAGS_COMPILE_1_": "-fmax-errors=1;-Wall;-Wextra;-pedantic;-Wvla;-Wreorder;-Wnon-virtual-dtor;-Weffc++;-Wold-style-cast;-Woverloaded-virtual;-Wsynth"
+        "_FLAGS_COMPILE_1_": "-fmax-errors=1;-Weffc++"
       }
     },
     {
@@ -79,7 +80,7 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER":   "clang",
         "CMAKE_CXX_COMPILER": "clang++",
-        "_FLAGS_COMPILE_1_": "-ferror-limit=1;-ftemplate-backtrace-limit=5;-fno-show-column;-Wall;-Wextra;-pedantic"
+        "_FLAGS_COMPILE_1_": "-ferror-limit=1"
       }
     },
     {
@@ -92,13 +93,24 @@
       }
     },
     {
-      "name": "clang-san",
-      "displayName": "2. Clang - sanitize",
+      "name": "clang-san-addr",
+      "displayName": "2. Clang - sanitize=address",
       "inherits": "clang-base",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "_FLAGS_COMPILE_2_": "-g3;-O0;-fno-omit-frame-pointer;-fno-optimize-sibling-calls",
-        "_FLAGS_COMP_LINK_" : "-fsanitize=address"
+        "_FLAGS_COMP_LINK_": "-fsanitize=address"
+      }
+    },
+    {
+      "name": "clang-san-mem",
+      "displayName": "2. Clang - sanitize=address,memory",
+      "inherits": "clang-base",
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux" },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "_FLAGS_COMPILE_2_": "-g3;-O0;-fno-omit-frame-pointer;-fno-optimize-sibling-calls;-fsanitize-memory-track-origins=2",
+        "_FLAGS_COMP_LINK_": "-fsanitize=address,memory"
       }
     }
   ]
