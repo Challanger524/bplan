@@ -16,6 +16,7 @@
             "AWS_ID": "my_id"
         },
 
+<<<<<<< HEAD
         //"editor.tabSize": 3,
         //"editor.detectIndentation": false,
         "editor.wordWrap": "on",
@@ -34,6 +35,24 @@
         //"debug.console.fontFamily": "Free Pixel",
         "accessibility.hideAccessibleView": true,
         "extensions.ignoreRecommendations": true,
+=======
+		//"editor.tabSize": 3,
+		//"editor.detectIndentation": false,
+		"editor.wordWrap": "on",
+		"editor.formatOnPaste": false,
+		"editor.renderWhitespace": "boundary",
+		"editor.accessibilitySupport": "off",
+		"window.zoomLevel": 0.25,
+		"terminal.integrated.tabs.focusMode": "singleClick",
+		"terminal.integrated.accessibleViewFocusOnCommandExecution": false,
+		"terminal.integrated.detectLocale": "on", // enables std::u8string valid output
+		"debug.openExplorerOnEnd": true,
+		"debug.focusEditorOnBreak": false,
+		"debug.internalConsoleOptions": "openOnSessionStart",
+		//"debug.console.fontFamily": "Free Pixel",
+		"accessibility.hideAccessibleView": true,
+		"extensions.ignoreRecommendations": true,
+>>>>>>> be4d42a (feature: Data Tree Editor (with cyrillic support))
 
         "C_Cpp.inlayHints.autoDeclarationTypes.enabled": false,
         "C_Cpp.inlayHints.referenceOperator.enabled": false,
@@ -42,6 +61,7 @@
 
         "cmake.parallelJobs": 4,
 
+<<<<<<< HEAD
         "typescript.surveys.enabled": false,
         "workbench.enableExperiments": false,
         "workbench.settings.enableNaturalLanguageSearch": false,
@@ -61,4 +81,20 @@
             "*.h++": "cpp",
         },
     }
+=======
+		"typescript.surveys.enabled": false,
+		"workbench.enableExperiments": false,
+		"workbench.settings.enableNaturalLanguageSearch": false,
+		"typescript.disableAutomaticTypeAcquisition": true,
+		"update.enableWindowsBackgroundUpdates": false,
+		"telemetry.telemetryLevel": "crash",
+		"update.mode": "none",
+
+		"files.associations": {
+			"**/Microsoft Visual Studio/**/MSVC/**/include/**": "cpp",
+			"*.mpp" : "cpp",
+			"*.cppm": "cpp",
+		},
+	}
+>>>>>>> be4d42a (feature: Data Tree Editor (with cyrillic support))
 }
