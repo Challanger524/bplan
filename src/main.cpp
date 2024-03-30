@@ -2,6 +2,12 @@
 #error "./config.hpp" not force included // See "./config.hpp" for details
 #endif
 
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <locale.h>
+#endif
+
 #include "app.hpp"
 
 #include <GLFW/glfw3.h>
@@ -13,6 +19,13 @@
 
 int main()
 {
+#ifdef _WIN32 // console UTF-8
+	//system("chcp 65001");
+	setlocale(LC_CTYPE, ".UTF8");
+	SetConsoleOutputCP(CP_UTF8);
+	SetConsoleCP      (CP_UTF8);
+#endif
+
 	//------------------------ Init: GLFW -------------------------------------
 	// Init/Setup GLFW (window, contexts, OS messages processing)
 	glfwSetErrorCallback([](int, const char *description) noexcept { std::cerr << "Error: " << description << std::endl; });
@@ -80,6 +93,7 @@ int main()
 
 	//------------------------ Main Loop: data --------------------------------
 	App app;
+	app.Test();
 	//------------------------ Main Loop: loop --------------------------------
 	while (!glfwWindowShouldClose(window))
 	{

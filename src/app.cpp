@@ -17,7 +17,9 @@ void App::operator()(void)
 	// - - - - - - - - - - - app: Apping - - - - - - - - - - - - - -
 	this->MainViewportMenuBar();
 	//this->MainWindow();
+	this->DataTreeEditor();
 
+#if 0
 	if (ImGui::Begin("Window", nullptr, ImGuiWindowFlags_NoCollapse))
 	{
 		static float f = 0.0f;
@@ -38,6 +40,7 @@ void App::operator()(void)
 
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 	} ImGui::End();
+#endif
 
 	// Dispatch keyboard (shortcuts)
 	constexpr bool norepeat = false;
@@ -55,7 +58,7 @@ void App::operator()(void)
 	if (this->show_demo_window)
 		ImGui::ShowDemoWindow(&show_demo_window);
 
-	static bool show_font_viewer = true;
+	static bool show_font_viewer = false;
 	if (show_font_viewer)
 		FontViewer(show_font_viewer);
 }
