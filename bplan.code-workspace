@@ -16,14 +16,20 @@
 			"AWS_ID": "my_id"
 		},
 
+		//"editor.tabSize": 3,
+		//"editor.detectIndentation": false,
 		"editor.wordWrap": "on",
-		"editor.formatOnPaste": true,
+		"editor.formatOnPaste": false,
+		"editor.renderWhitespace": "boundary",
 		"editor.accessibilitySupport": "off",
 		"window.zoomLevel": 0.25,
 		"terminal.integrated.tabs.focusMode": "singleClick",
 		"terminal.integrated.accessibleViewFocusOnCommandExecution": false,
+		"terminal.integrated.detectLocale": "on", // enables std::u8string valid output
 		"debug.openExplorerOnEnd": true,
 		"debug.focusEditorOnBreak": false,
+		"debug.internalConsoleOptions": "openOnSessionStart",
+		//"debug.console.fontFamily": "Free Pixel",
 		"accessibility.hideAccessibleView": true,
 		"extensions.ignoreRecommendations": true,
 
@@ -41,13 +47,11 @@
 		"update.enableWindowsBackgroundUpdates": false,
 		"telemetry.telemetryLevel": "crash",
 		"update.mode": "none",
+
 		"files.associations": {
+			"**/Microsoft Visual Studio/**/MSVC/**/include/**": "cpp",
+			"*.mpp" : "cpp",
 			"*.cppm": "cpp",
-			"iostream": "cpp",
-			"algorithm": "cpp",
-			"format": "cpp",
-			"cstdint": "cpp"
 		},
-		//"C_Cpp.default.forcedInclude": ["${workspaceFolder}/src/config.hpp"],
 	}
 }
