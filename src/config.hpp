@@ -19,3 +19,8 @@ using ushort = unsigned short;
 using ulong  = unsigned long long;
 using uchar  = unsigned char;
 using uint   = unsigned int;
+
+//#define ccast       const_cast
+  #define scast      static_cast
+//#define dcast     dynamic_cast
+//#define rcast reinterpret_cast

@@ -143,7 +143,7 @@ int main()
 
 		{ // render frame stats
 			static char framestats[64];
-			snprintf(framestats, sizeof(framestats), "%5d(%c) %4.fms %2.ffps", ImGui::GetFrameCount(), "|/-\\"[uint(ImGui::GetTime() * 3) & 3], 1000.0f / io.Framerate, io.Framerate);
+			snprintf(framestats, sizeof(framestats), "%5d(%c) %4.fms %2.ffps", ImGui::GetFrameCount(), "|/-\\"[scast<uint>(ImGui::GetTime() * 3) & 3u], 1000.0f / io.Framerate, io.Framerate);
 			ImGui::GetForegroundDrawList()->AddText(CalcAlignBottomRight(framestats, ImGui::GetMainViewport()->WorkSize), IM_COL32_WHITE, framestats);
 		}
 
