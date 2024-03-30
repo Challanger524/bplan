@@ -2,6 +2,7 @@
 
 #include "int/imgui/tools.hpp"
 #include "int/imgui/forms.hpp"
+#include "int/imgui/forms/font_viewer.hpp"
 
 #include <imgui/imgui.h>
 
@@ -53,4 +54,8 @@ void App::operator()(void)
 
 	if (this->show_demo_window)
 		ImGui::ShowDemoWindow(&show_demo_window);
+
+	static bool show_font_viewer = true;
+	if (show_font_viewer)
+		FontViewer(show_font_viewer);
 }

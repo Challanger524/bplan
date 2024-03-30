@@ -20,7 +20,7 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER":   "cl",
         "CMAKE_CXX_COMPILER": "cl",
-        "_FLAGS_COMPILE_1_": "/Wall;/external:W0;/external:anglebrackets;/wd5045"
+        "_FLAGS_COMPILE_1_": "/utf-8;/Wall;/external:W0;/external:anglebrackets;/wd5045"
       },
       "environment": { "_FLAGS_COMPILE_1_UNUSED_": "/wd4514;/wd4820" },
       "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" }
