@@ -120,7 +120,6 @@ struct TaxUnit
 
 private:
 	inline static TaxUnit *root = nullptr;
-	inline static bool display_level = false;
 
 public:
 	uidc_t id{};

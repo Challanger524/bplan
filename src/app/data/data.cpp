@@ -1,4 +1,5 @@
 #include "app/data.hpp"
+#include "settings.hpp"
 
 #include <format>
 #include <array>
@@ -78,7 +79,7 @@ void TaxUnit::InitCapitals()
 void TaxUnit::SwitchDisplayLevel(bool just_init)
 {
 	if (!just_init)
-		TaxUnit::display_level = !TaxUnit::display_level;
+		bp::sett.disp.depthLevel = !bp::sett.disp.depthLevel;
 
 	auto NumWidth = [](auto s) {
 		uint width = 0;
@@ -103,7 +104,7 @@ void TaxUnit::SwitchDisplayLevel(bool just_init)
 			for (size_t i{}; i < units.size(); i++)
 				units[i].display = std::format("{1:{2}}. {0}"    , units[i].name, i+1, width);
 		}
-		else if (TaxUnit::display_level && !(units[0].is & kind::filter_tl)) {
+		else if (bp::sett.disp.depthLevel && !(units[0].is & kind::filter_tl)) {
 			for (size_t i{}; i < units.size(); i++)
 				units[i].display = std::format("{3}.{1:{2}}. {0}", units[i].name, i+1, width, level);
 			level++;
@@ -119,7 +120,7 @@ void TaxUnit::SwitchDisplayLevel(bool just_init)
 
 	// root
 	auto &unit = *this;
-	if (TaxUnit::display_level && unit.is & kind::taxlevel)
+	if (bp::sett.disp.depthLevel && unit.is & kind::taxlevel)
 		unit.display = std::format("{}. {}", 1, unit.name);
 	else
 		unit.display = unit.name;

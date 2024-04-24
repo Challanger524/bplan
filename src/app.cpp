@@ -1,4 +1,5 @@
-# include "app.hpp"
+#include "app.hpp"
+#include "settings.hpp"
 
 #include "int/imgui/tools.hpp"
 #include "int/imgui/forms.hpp"
@@ -43,9 +44,8 @@ void App::operator()(void)
 #endif
 
 	// Dispatch keyboard (shortcuts)
-	constexpr bool norepeat = false;
 	if (io.KeyCtrl) {
-		if (ImGui::IsKeyPressed(ImGuiKey_M, norepeat)) this->showMainViewportMenuBar ^= true;
+		//if (ImGui::IsKeyPressed(ImGuiKey_M, false)) bp::sett.showMainViewportMenuBar ^= true;
 	}
 
 	{ // render frame stats
@@ -55,8 +55,8 @@ void App::operator()(void)
 		ImGui::GetForegroundDrawList()->AddText(CalcAlignBottomRight(framestats, ImGui::GetMainViewport()->Size), IM_COL32_WHITE, framestats);
 	}
 
-	if (this->show_demo_window)
-		ImGui::ShowDemoWindow(&show_demo_window);
+	if (bp::sett.app.showImGuiDemoWindow)
+		ImGui::ShowDemoWindow(&bp::sett.app.showImGuiDemoWindow);
 
 	static bool show_font_viewer = false;
 	if (show_font_viewer)
