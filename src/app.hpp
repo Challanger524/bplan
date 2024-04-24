@@ -5,8 +5,6 @@
 class App
 {
 	TaxUnit root{};
-bool show_demo_window {false};
-bool showMainViewportMenuBar {true};
 
 public:
 	~App() {}

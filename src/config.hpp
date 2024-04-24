@@ -48,6 +48,10 @@
 namespace      ImGui {} // `Dear ImGui` namespace pre-declaration (to alias it in the next line)
 namespace im = ImGui;   // global alias for `ImGui::` namespace
 
+namespace       bplan {} // `Budged Planner` namespace pre-declaration (to alias it in the next line)
+namespace bp  = bplan;   // global alias for `bplan::` namespace
+using namespace bplan;
+
 #include <stdint.h>
 using ushort = unsigned short;
 using ulong  = unsigned long long;
