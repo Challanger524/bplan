@@ -51,8 +51,30 @@ target_include_directories(imgui SYSTEM PUBLIC  "${IMGUI_SOURCE_DIR_}"
                                         PRIVATE "${CMAKE_SOURCE_DIR}/deps/glfw/include")
 set_target_properties     (imgui PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED ON)
 
+# Setup: libconfig #
+# ehh... This command applies <patch> with `git`. Git fails if patch "already applied", so 2 commands are needed.
+execute_process(
+  COMMAND git apply "misc/patch/libconfig_wincompat_mingw.patch"            # if patch already applied - will fail
+  COMMAND git apply "misc/patch/libconfig_wincompat_mingw.patch" --check -R # if succeeds - patch sucessfully applied - conf OK
+  WORKING_DIRECTORY      "${CMAKE_SOURCE_DIR}"                              #    oterwise - patch is not applied - conf FAIL
+  COMMAND_ERROR_IS_FATAL LAST   # helps to avoid configure fail on false-error when patch is already applied
+  COMMAND_ECHO           STDOUT # express patching presence                           (optional)
+  ERROR_QUIET                   # first command false-errors if patch already applied (optional) but real issue with 1st cmd..
+  TIMEOUT                5      #                                                     (optional) ..can be missed this way
+) #!workaround
+
+  set(LIBCONFIG_    "config++")
+if(MSVC)
+  set(LIBCONFIG_ "libconfig++")
+endif()
+set(BUILD_SHARED_LIBS NO CACHE BOOL "" FORCE)
+set(BUILD_EXAMPLES    NO CACHE BOOL "" FORCE)
+set(BUILD_TESTS       NO CACHE BOOL "" FORCE)
+add_subdirectory("deps/libconfig")
+target_compile_definitions(${LIBCONFIG_} PRIVATE LIBCONFIG_STATIC) #!workaround
+
 # # Apply: project dependencies # #
-target_link_libraries     (${PROJECT_NAME} OpenGL::GL glfw imgui)
+target_link_libraries     (${PROJECT_NAME} OpenGL::GL glfw imgui ${LIBCONFIG_})
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE
   "${CMAKE_SOURCE_DIR}/deps" # rooted dirs will be treated as SYSTEM, even if opposite stated explicitly (with: -I)
 )
