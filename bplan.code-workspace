@@ -48,10 +48,15 @@
 		"telemetry.telemetryLevel": "crash",
 		"update.mode": "none",
 
+		//"trailing-spaces.syntaxIgnore": ["diff"],
+
+		"files.trimTrailingWhitespace": false,
 		"files.associations": {
 			"**/Microsoft Visual Studio/**/MSVC/**/include/**": "cpp",
-			"*.mpp" : "cpp",
+			"*.mpp": "cpp",
 			"*.cppm": "cpp",
+			"*.h++": "cpp",
+			"shlwapi.h": "c"
 		},
 	}
 }

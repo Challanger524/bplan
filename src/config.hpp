@@ -43,6 +43,8 @@
 
 //#define MOD_CHAR8_T // enable `char8_t` stream `operator<<` overloads
 
+#define LIB_LIBCONFIG
+
 #define IMGUI_DEFINE_MATH_OPERATORS // Enable operator overloads for ImGui (like: `ImVec2`)
 
 namespace      ImGui {} // `Dear ImGui` namespace pre-declaration (to alias it in the next line)

@@ -44,6 +44,8 @@ deps/
 *.dmp
 *.log
 *.ini
+*.cfg
+*.cfg+
 
 ## Windows/Linux/other file copys/duplicates or '_commented' file (dummys)
 _*

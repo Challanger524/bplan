@@ -5,3 +5,7 @@
 	path = deps/imgui
 	url = https://github.com/ocornut/imgui
 	branch = docking
+[submodule "libconfig"]
+	path = deps/libconfig
+	url = https://github.com/hyperrealm/libconfig
+	ignore = dirty

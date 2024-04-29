@@ -1,0 +1,26 @@
+Silly fix for the broken macro conditions omitting 3rd case for Windows/MSYS2(MinGW)
+
+--- a/deps/libconfig/lib/wincompat.h
++++ b/deps/libconfig/lib/wincompat.h
+@@ -92,10 +92,21 @@ extern int posix_fsync(int fd);
+ #define FILE_SEPARATOR "/"
+ 
+ #endif /* defined(WIN32) || defined(__MINGW32__) */
+ 
+ #if (defined(WIN32) || defined(_WIN32) || defined(__WIN32__) \
++  || defined(WIN64) || defined(_WIN64) || defined(__WIN64__)) \
++  && defined(__MINGW32__)
++
++#define INT64_CONST(I)  (I ## LL)
++#define UINT64_CONST(I) (I ## ULL)
++
++#include <Shlwapi.h>
++#define IS_RELATIVE_PATH(P) \
++  (PathIsRelativeA(P))
++
++#elif (defined(WIN32) || defined(_WIN32) || defined(__WIN32__) \
+   || defined(WIN64) || defined(_WIN64) || defined(__WIN64__)) \
+   && ! defined(__MINGW32__)
+ 
+ #define INT64_CONST(I)  (I ## i64)
+ #define UINT64_CONST(I) (I ## Ui64)
