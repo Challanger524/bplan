@@ -41,6 +41,11 @@ indent_size = 2
 indent_style = space
 indent_size = 4
 
+# save formatting
+[*.patch]
+trim_trailing_whitespace = false
+indent_style = unset
+
 ### "experimental `.gitmodules` 5-space identation" to
 #[.gitmodules] # align L1:`submodule "<name>"` with L2:`path = <name>`, like:
 #indent_style = space #L1:[submodule "deps/imgui/imgui"]

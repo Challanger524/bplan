@@ -8,6 +8,7 @@
 #include <locale.h>
 #endif
 
+#include "runconfig.hpp"
 #include "app.hpp"
 
 #include <GLFW/glfw3.h>
@@ -25,6 +26,8 @@ int main()
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleCP      (CP_UTF8);
 #endif
+
+	SettingsReload();
 
 	//------------------------ Init: GLFW -------------------------------------
 	// Init/Setup GLFW (window, contexts, OS messages processing)
@@ -140,6 +143,8 @@ int main()
 	}
 
 	//------------------------ Deinit: all ------------------------------------
+	SettingsUnload();
+
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
