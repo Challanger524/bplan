@@ -1,7 +1,6 @@
 cmake_minimum_required (VERSION 3.26)
 
-project (bplan  VERSION       0.1
-                DESCRIPTION  "Budget Planner for Hromadas"
+project (bplan  DESCRIPTION  "Country (UA) Budget Planner"
                 HOMEPAGE_URL "https://github.com/Challanger524/bplan"
                 LANGUAGES     CXX)
 
@@ -12,26 +11,27 @@ target_precompile_headers (${PROJECT_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/src/co
 set_target_properties     (${PROJECT_NAME} PROPERTIES
   CXX_STANDARD          23
   CXX_STANDARD_REQUIRED ON
-  RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}$<0:>" # deal with resource depsendencies
+  RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}$<0:>" # deal with resource depsendencies (dummy gen-expression to enforce exact value)
   EXPORT_COMPILE_COMMANDS   ON
 )
 
 # # Apply: compile definitions # #
-target_compile_definitions(${PROJECT_NAME} PRIVATE "$<$<BOOL:_DEFINITIONS_>:${_DEFINITIONS_}>")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "${_DEFINITIONS_}")
 
 # # Gather: sources # #
 file(GLOB_RECURSE SOURCE_FILES_ CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/src/*.cpp")
 list(FILTER SOURCE_FILES_ EXCLUDE REGEX ".*\\/_.*\\..*") # exclude files starting with uncderscore `_<file>`: https://regex101.com/r/DT6qGi/1
 target_sources        (${PROJECT_NAME} PRIVATE ${SOURCE_FILES_})
 
-# # Apply: compiler flags (from: CMakePresets.json) # #
-target_compile_options(${PROJECT_NAME} PRIVATE "$<$<BOOL:_FLAGS_COMPILE_0_>:${_FLAGS_COMPILE_0_}>")
-target_compile_options(${PROJECT_NAME} PRIVATE        "${_FLAGS_COMPILE_1_};${_FLAGS_COMPILE_2_}")
+# # Apply: compiler and linker flags (from: CMakePresets.json) # #
+target_link_options   (${PROJECT_NAME} PRIVATE "${_FLAGS_LINKER_}")    # flags: linker
 # flags: compiler & linker (mutual)
-target_compile_options(${PROJECT_NAME} PRIVATE "$<$<BOOL:_FLAGS_COMP_LINK_>:${_FLAGS_COMP_LINK_}>")
-target_link_options   (${PROJECT_NAME} PRIVATE "$<$<BOOL:_FLAGS_COMP_LINK_>:${_FLAGS_COMP_LINK_}>")
-# flags: linker
-target_link_options   (${PROJECT_NAME} PRIVATE "$<$<BOOL:_FLAGS_LINKER_>:${_FLAGS_LINKER_}>")
+target_link_options   (${PROJECT_NAME} PRIVATE "${_FLAGS_COMP_LINK_}") #
+target_compile_options(${PROJECT_NAME} PRIVATE "${_FLAGS_COMP_LINK_}") #
+# flags: compliler
+target_compile_options(${PROJECT_NAME} PRIVATE "${_FLAGS_COMPILE_0_}"  #
+                                               "${_FLAGS_COMPILE_1_}"  #
+                                               "${_FLAGS_COMPILE_2_}") #
 
 # # Setup: libraries # #
 find_package(OpenGL REQUIRED)
