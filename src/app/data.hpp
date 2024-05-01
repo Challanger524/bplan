@@ -118,9 +118,6 @@ struct TaxUnit
 	using kind_t = std::underlying_type_t<kind>;
 	using uidc_t = uint; // tax гid (counter)
 
-private:
-	inline static TaxUnit *root = nullptr;
-
 public:
 	uidc_t id{};
 	kind_t is{};
@@ -154,10 +151,13 @@ public:
 	explicit operator const void *() const { return reinterpret_cast<const void *>(this); }
 
 public:
-	void Test(); // grow a tree for testing
-
 	void InitChildsParent(bool full_depth = false);
 	void InitCapitals();
 
 	void SwitchDisplayLevel(bool just_init = false);
 };
+
+#include <type_traits>
+template <class T, class Alloc>
+concept erasable = requires(Alloc a, T *t) { { std::allocator_traits<Alloc>::destroy(a, t) } -> std::same_as<void>; };
+static_assert(erasable<TaxUnit, std::vector<TaxUnit>::allocator_type>);

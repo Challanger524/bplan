@@ -96,7 +96,9 @@ int main()
 
 	//------------------------ Main Loop: data --------------------------------
 	App app;
-	app.Test();
+#if !defined(NDEBUG) || defined(TESTS_IN_APP)
+	app.test.DemoCityChernihiv();
+#endif
 	//------------------------ Main Loop: loop --------------------------------
 	while (!glfwWindowShouldClose(window))
 	{

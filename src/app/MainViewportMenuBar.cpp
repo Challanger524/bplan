@@ -14,7 +14,7 @@ void App::MainViewportMenuBar()
 
 		if (im::BeginMenu("View")) {
 			im::SeparatorText("Tree Editor");
-			if (im::MenuItem("Display Level", nullptr, bp::sett.disp.depthLevel)) { root.SwitchDisplayLevel(); }
+			if (im::MenuItem("Display Level", nullptr, bp::sett.disp.depthLevel)) { root->SwitchDisplayLevel(); }
 			im::EndMenu();
 		}
 
@@ -31,6 +31,10 @@ void App::MainViewportMenuBar()
 			im::Separator();
 			im::EndMenu();
 		}
+
+		#if !defined(NDEBUG) || defined(TESTS_IN_APP)
+			this->test.DrawMenuBar();
+		#endif
 
 		im::EndMainMenuBar();
 	}

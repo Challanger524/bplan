@@ -1,10 +1,13 @@
 #pragma once
 
+#include "test.hpp"
 #include "app/data.hpp"
+
+#include <memory>
 
 class App
 {
-	TaxUnit root{};
+	std::unique_ptr<TaxUnit> root{};
 
 public:
 	~App() {}
@@ -15,14 +18,17 @@ public:
 	App& operator=(      App&&) = delete;
 	App& operator=(const App& ) = delete;
 
-	// Main _apping_ functor (function) of this `App`
-	void operator()(void);
-	void Test() { root.Test(); }
-
-	//void SwitchDisplayLevel() {root.SwitchDisplayLevel();}
+	// \>\> Main loop _apping_ functor of this `App` <<
+	void operator()(void); // <- - - main loop of the `App`
 
 private:
 	void MainViewportMenuBar();
 	void MainWindow();
 	void DataTreeEditor();
+
+public:
+#if !defined(NDEBUG) || defined(TESTS_IN_APP)
+	friend class Test;
+	Test test{this};
+#endif
 };

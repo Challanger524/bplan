@@ -93,7 +93,8 @@ void App::DataTreeEditor()
 	if (treeEditorFlagsAlignLabel) im::Unindent(im::GetTreeNodeToLabelSpacing());
 	im::SetNextItemOpen(true, ImGuiCond_Once);
 
-	TaxUnitEdit(this->root);
+	if (root)
+		TaxUnitEdit(*this->root);
 
 	ImGui::End();
 }
