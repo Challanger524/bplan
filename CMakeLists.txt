@@ -79,6 +79,20 @@ target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE
   "${CMAKE_SOURCE_DIR}/deps" # rooted dirs will be treated as SYSTEM, even if opposite stated explicitly (with: -I)
 )
 
+# # Add: custom build targets # #
+add_custom_target(${PROJECT_NAME}-clean
+  COMMENT "Cleaning `${PROJECT_NAME}` target:"
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  COMMAND ${CMAKE_COMMAND} -DFILES_="${PROJECT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}.dir/src/"
+                           -P "misc/script/remove_recurse.cmake"
+)
+
+add_custom_target(${PROJECT_NAME}-rebuild
+  COMMENT "Rebuilding `${PROJECT_NAME}` target:"
+  DEPENDS ${PROJECT_NAME}-clean
+  COMMAND ${CMAKE_COMMAND} --build "." --target ${PROJECT_NAME}
+)
+
 
 ###Stash###
 
@@ -87,3 +101,7 @@ target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE
 # debug file(GLOB_RECURSE)
 #string (REPLACE ";" "\n" SOURCE_FILES_ "${SOURCE_FILES_}")
 #message(FATAL_ERROR ${SOURCE_FILES_})
+
+#cmake_path(GET CMAKE_CACHEFILE_DIR FILENAME PRESET_)
+#message(${CMAKE_CACHEFILE_DIR})
+#message(${PRESET_})
