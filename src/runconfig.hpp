@@ -95,7 +95,8 @@ inline void SettingsUnloadLibconfig()
 	lc::Setting &disp = root.add("display", lsett_k::TypeGroup);
 	{
 		disp.add("depthLevel", lsett_k::TypeBoolean) = bp::sett.disp.depthLevel;
-		//disp.add("nodeEnumer", lsett_k::TypeBoolean) = bp::sett.disp.nodeEnumer;
+		disp.add("nodeEnumer", lsett_k::TypeBoolean) = bp::sett.disp.nodeEnumer;
+		disp.add("elemEnumer", lsett_k::TypeBoolean) = bp::sett.disp.elemEnumer;
 	}
 
 	// Write out the updated configuration
@@ -169,6 +170,8 @@ inline void SettingsReloadLibconfig()
 	try {
 		const auto& group = root["display"];
 		Lookup(group, "depthLevel", bp::sett.disp.depthLevel);
+		Lookup(group, "nodeEnumer", bp::sett.disp.nodeEnumer);
+		Lookup(group, "elemEnumer", bp::sett.disp.elemEnumer);
 	}
 	catch (const lc::SettingNotFoundException&) { std::cerr << "Err: `display` not found\n"; }
 }

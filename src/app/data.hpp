@@ -1,7 +1,6 @@
 #pragma once
 
 #include <type_traits>
-#include <functional>
 #include <vector>
 #include <string>
 #include <iostream>
@@ -12,6 +11,7 @@ enum TaxUnitKind : ulong
 {
 	none             = 0,
 	generic          = 1ull << 0,
+	budget           = 1ull << 1,
 
 	// tax level          // administrative divisions
 		filter_tl = 1ull << 5, // tax level filter - фільтр: громад
@@ -24,20 +24,9 @@ enum TaxUnitKind : ulong
 		oblast  = 1ull << 13, // область - 24 областей
 		region  = 1ull << 12, // регіон  - 27 регіонів: область/Автономна Республіка Крим/місто зі спеціальним статусом (Київ, Севастополь)
 		country = 1ull << 14, // країна
-			//rayon_c = a_taxlevel | a_rayon_c, // район (міста)
-			//farm    = a_taxlevel | a_farm   , // село
-			//village = a_taxlevel | a_village, // селище
-			//city    = a_taxlevel | a_city   ,
-			//hromada = a_taxlevel | a_hromada, // міська/селищна/сільська територіальна громада
-			//rayon_o = a_taxlevel | a_rayon_o, // район (області)
-			//region  = a_taxlevel | a_region , // 27 регіонів: область/Автономна Республіка Крим/місто зі спеціальним статусом (Київ, Севастополь)
-			//oblast  = a_taxlevel | a_oblast | a_region, // 24 областей
-			//country = a_taxlevel | a_country,
-
 			special = region | city, // special city: Київ, Севастополь
-			//filter_tl = a_taxlevel | a_filter_taxlevel,
 
-	taxlevel = rayon_c|farm|village|city|hromada|rayon_o|region|oblast|country|special|filter_tl,
+	administ = rayon_c|farm|village|city|hromada|rayon_o|region|oblast|country|filter_tl,
 
 	//a_taxelem  = 1ull << 16,
 	filter_tp  = 1ull << 17, // tax payer filter
@@ -51,13 +40,6 @@ enum TaxUnitKind : ulong
 			a_APs     = 1ull << 25, //  АП - акціонерні підприємства
 			a_NPs     = 1ull << 26, //  НП - неприбуткові організації
 			a_Gs      = 1ull << 27, //   Г - громадські   організації
-				//a_worker = 1ull << N, //       найманий робітник
-				//a_FOP    = 1ull << N, // ФОП - фізична особа підприємець
-				//a_TOV    = 1ull << N, // ТОВ -   товариство
-				//a_PP     = 1ull << N, //  ПП - підприємство
-				//a_AP     = 1ull << N, //  АП - підприємство
-				//a_NP     = 1ull << N, //  НП - організація
-				//a_G      = 1ull << N, //   Г - організація
 
 		physical  =      a_physical,  // фіз-особи
 			workers =    a_physical  | a_workers, // наймані робітники
@@ -111,7 +93,7 @@ enum TaxUnitKind : ulong
 using tuKind_t = std::underlying_type_t<TaxUnitKind>;
 }
 
-// Gereralized administrative tax unit
+// Gereralized budget unit representing sertain level/scope
 struct TaxUnit
 {
 	using kind = tuKind::TaxUnitKind; // (re)namespace
@@ -119,24 +101,28 @@ struct TaxUnit
 	using uidc_t = uint; // tax гid (counter)
 
 public:
-	uidc_t id{};
 	kind_t is{};
+
 	std::string display{};
 	std::string name{};
-	std::vector<TaxUnit> units{};
 
+	std::vector<TaxUnit> units{};
+	//TaxUnit *root{nullptr}; //> necessity
 	TaxUnit *parent {nullptr};
-	TaxUnit *capital{nullptr};
+	TaxUnit *capital{nullptr}; //? deprecate
 
 	// sum
 	// diff //?
 	// str: sum_round
 
+	//Budget *budget{nullptr};
+	//void *data{nullptr}; // polimprphic storage
+
 public:
 	//~TaxUnit() {}
 	TaxUnit() {}
 	TaxUnit(kind_t kind, std::string name, std::vector<TaxUnit> units = std::vector<TaxUnit>()) : is(kind), units(units), name(name) {
-		std::cout << ": " << name << std::endl;
+		std::cout << "Dev: " << name << std::endl;
 	}
 
 	TaxUnit           (const TaxUnit &) = default;
@@ -154,7 +140,11 @@ public:
 	void InitChildsParent(bool full_depth = false);
 	void InitCapitals();
 
-	void SwitchDisplayLevel(bool just_init = false);
+	void Display(); // form display header
+
+private:
+	void FormDisplay(ushort level, size_t pos, size_t pos_padd);
+	//void FormDisplay();
 };
 
 #include <type_traits>
