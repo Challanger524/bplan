@@ -14,7 +14,10 @@ void App::MainViewportMenuBar()
 
 		if (im::BeginMenu("View")) {
 			im::SeparatorText("Tree Editor");
-			if (im::MenuItem("Display Level", nullptr, bp::sett.disp.depthLevel)) { root->SwitchDisplayLevel(); }
+			//if (im::MenuItem("Display Level", nullptr, bp::sett.disp.depthLevel)) { root->Display(); }
+			if (im::MenuItem("Display Level"               , nullptr, &bp::sett.disp.depthLevel)) { root->Display(); }
+			if (im::MenuItem("Display Enumeration: node"   , nullptr, &bp::sett.disp.nodeEnumer)) { root->Display(); }
+			if (im::MenuItem("Display Enumeration: element", nullptr, &bp::sett.disp.elemEnumer)) { root->Display(); }
 			im::EndMenu();
 		}
 

@@ -59,5 +59,5 @@ void Test::SkeletonUA()
 	itis.InitChildsParent();
 	itis.InitCapitals();
 
-	itis.SwitchDisplayLevel();
+	itis.Display();
 }

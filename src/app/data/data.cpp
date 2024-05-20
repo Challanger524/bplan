@@ -1,8 +1,10 @@
 #include "app/data.hpp"
 #include "settings.hpp"
 
+#include <functional>
 #include <format>
 #include <array>
+#include <assert.h>
 
 void TaxUnit::InitChildsParent(const bool full_depth)
 {
@@ -36,7 +38,7 @@ void TaxUnit::InitCapitals()
 	std::function<TaxUnit*(TaxUnit &, kind_t)>
 	FindCapital_ttrl = [&FindCapital_ttrl] (TaxUnit &unit, const kind_t this_capital) -> TaxUnit*
 	{ // depth search for a valid capital settelment
-		if (unit.is & kind::taxlevel) // below taxlevel
+		if (unit.is & kind::administ) // below administ
 		{
 			if (unit.is & this_capital) // found
 				return &unit;
@@ -52,7 +54,7 @@ void TaxUnit::InitCapitals()
 	std::function<void(TaxUnit &)>
 	InitCapitals_ttrl = [&](TaxUnit &unit)
 	{
-		if (!(unit.is & kind::taxlevel))
+		if (!(unit.is & kind::administ))
 			return;
 
 		if (unit.capital == nullptr && unit.is & kind::has_capital) {
@@ -76,54 +78,58 @@ void TaxUnit::InitCapitals()
 }
 
 // -> FormDisplay(TaxUnit &unit, bool init = false)
-void TaxUnit::SwitchDisplayLevel(bool just_init)
+void TaxUnit::FormDisplay(const ushort level, const size_t pos, const size_t pos_padd)
 {
-	if (!just_init)
-		bp::sett.disp.depthLevel = !bp::sett.disp.depthLevel;
+	//if (!is) return;
 
-	auto NumWidth = [](auto s) {
-		uint width = 0;
-		while (s > 0) {
-			s /= 10;
-			width++;
+	this->display.clear();
+	this->display.reserve(this->name.size());
+
+	if (!(this->is & kind::filter))
+	{
+		// depth level
+		if (this->is & kind::administ && bp::sett.disp.depthLevel && level > 0)
+			this->display += std::format("{}.", level);
+
+		// enumeration
+		auto Enumer = [&] () { this->display += std::format("{:{}}.", pos, pos_padd); };
+		if (this->is & kind::a_taxpayer) { if (bp::sett.disp.elemEnumer)                   Enumer(); }
+		else                             { if (bp::sett.disp.nodeEnumer && pos != 0uz - 1) Enumer(); }
+	}
+
+	if (!this->display.empty())
+		this->display += ' ';
+
+	this->display += this->name;
+}
+
+void TaxUnit::Display()
+{
+	auto DigitCount_l = [](auto decimal) -> uint {
+		uint digits = 0;
+		while (decimal > 0) {
+			decimal /= 10;
+			digits++;
 		}
-		return width;
+		return digits;
 	};
 
 	// `_ttrl` - traverse tree recurse lambda
 	std::function<void(TaxUnit &, int)>
-	SwitchDisplayLevel_ttrl = [&SwitchDisplayLevel_ttrl, &NumWidth](TaxUnit &unit, int level) // sets level
+	Display_ttrl = [&Display_ttrl, &DigitCount_l](TaxUnit &unit, int level)
 	{
-		if (!unit.is || unit.units.empty()) return;
+		if (!(unit.is & kind::filter)) level++;
 
-		//int nextLevel = level;
-		auto &units = unit.units;
-		const auto width = NumWidth(units.size() + 1);
+		const size_t shift = !unit.units.empty() && (unit.units[0].is & kind::budget) ? 0 : 1; // only if `budget` present enumeration starts from 0
+		const auto pos_width = DigitCount_l(unit.units.size() + shift);
 
-		if (units[0].is & kind::a_taxpayer) {
-			for (size_t i{}; i < units.size(); i++)
-				units[i].display = std::format("{1:{2}}. {0}"    , units[i].name, i+1, width);
+		for (size_t i = 0; i < unit.units.size(); i++) {
+			unit.units[i].FormDisplay(level, i+shift, pos_width);
+			Display_ttrl(unit.units[i], level);
 		}
-		else if (bp::sett.disp.depthLevel && !(units[0].is & kind::filter_tl)) {
-			for (size_t i{}; i < units.size(); i++)
-				units[i].display = std::format("{3}.{1:{2}}. {0}", units[i].name, i+1, width, level);
-			level++;
-		}
-		else {
-			for (auto &u : units)
-				u.display = u.name;
-		}
-
-		for (auto &u : unit.units)
-			SwitchDisplayLevel_ttrl(u, level);
 	};
 
-	// root
-	auto &unit = *this;
-	if (bp::sett.disp.depthLevel && unit.is & kind::taxlevel)
-		unit.display = std::format("{}. {}", 1, unit.name);
-	else
-		unit.display = unit.name;
-
-	SwitchDisplayLevel_ttrl(*this, 2);
+	assert(parent == nullptr && "Must be a root node");
+	this->FormDisplay(0, -1, 0);
+	Display_ttrl(*this, 0);
 }

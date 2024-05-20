@@ -31,8 +31,9 @@ struct Settings { // global program settings
 					0;
 
 				struct Display {
-					bool depthLevel            = 0;
-					//bool nodeEnumer            = 0; // tree node enumeration of same-level
+					bool depthLevel            = 1;
+					bool nodeEnumer            = 1; // tree node enumeration of same-level nodes
+					bool elemEnumer            = 1; // tree node enumeration of taxpayers (leafs)
 				} display, &disp = display;
 			} tree;
 		} editor, &edit = editor;

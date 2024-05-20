@@ -26,6 +26,8 @@
 		"terminal.integrated.tabs.focusMode": "singleClick",
 		"terminal.integrated.accessibleViewFocusOnCommandExecution": false,
 		"terminal.integrated.detectLocale": "on", // enables std::u8string valid output
+		"terminal.integrated.enablePersistentSessions": true,
+		"terminal.integrated.persistentSessionReviveProcess": "never",
 		"debug.openExplorerOnEnd": true,
 		"debug.focusEditorOnBreak": false,
 		"debug.internalConsoleOptions": "openOnSessionStart",
@@ -53,10 +55,10 @@
 		"files.trimTrailingWhitespace": false,
 		"files.associations": {
 			"**/Microsoft Visual Studio/**/MSVC/**/include/**": "cpp",
+			"**/msys64/**/include/**": "cpp",
 			"*.mpp": "cpp",
 			"*.cppm": "cpp",
 			"*.h++": "cpp",
-			"shlwapi.h": "c"
 		},
 	}
 }
