@@ -65,6 +65,10 @@ using uint   = unsigned int;
 //#define dcast     dynamic_cast
 //#define rcast reinterpret_cast
 
+#ifdef _MSC_VER
+constexpr size_t operator ""uz(unsigned long long n) { return n; }
+#endif
+
 #if defined(MOD_CHAR8_T) && !defined(NO_OSTREAM_CHAR_8T_TO_CHAR)
 #include <iostream>
 #include <string>

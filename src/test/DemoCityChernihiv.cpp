@@ -55,7 +55,8 @@ void Test::DemoCityChernihiv()
 		//TaxUnit(kind::region, "Автономна Республіка Крим", {}),
 	};
 
-	tuRoot.
+	auto &unit = // FOP
+		tuRoot.
 		units[0]. // 1
 		units[0]. // 2
 		units[0]. // 3
@@ -64,13 +65,15 @@ void Test::DemoCityChernihiv()
 		units[0]. // 6
 		units[0]. // 7
 		units[0]. // 8
-		units[1]. // 9
-		units.resize(100'000); // 10
+		units[1]; // 9
+
+	unit.units.resize(100'000); // 10
+	for (auto &u : unit.units) u.is = unit.units[0].is;
 
 	//BREAKPOINT();
 	[[maybe_unused]] TaxUnit &itis = tuRoot; // for clang vscode debugging
 	itis.InitChildsParent();
 	itis.InitCapitals();
 
-	itis.SwitchDisplayLevel();
+	itis.Display();
 }
