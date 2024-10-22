@@ -1,0 +1,64 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "files.readonlyInclude": {
+            "deps/**": true,
+            "**/ChernoOpenGL-CMake/**": true,
+            "**/MSVC/**/include/**": true,
+        },
+
+        "terminal.integrated.env.windows": {
+            "AWS_REGION": "us-east-2",
+            "AWS_ID": "my_id"
+        },
+
+        //"editor.tabSize": 3,
+        //"editor.detectIndentation": false,
+        "editor.wordWrap": "on",
+        "editor.formatOnPaste": false,
+        "editor.renderWhitespace": "boundary",
+        "editor.accessibilitySupport": "off",
+        "window.zoomLevel": 0.25,
+        "terminal.integrated.tabs.focusMode": "singleClick",
+        "terminal.integrated.accessibleViewFocusOnCommandExecution": false,
+        "terminal.integrated.detectLocale": "on", // enables std::u8string valid output
+        "terminal.integrated.enablePersistentSessions": true,
+        "terminal.integrated.persistentSessionReviveProcess": "never",
+        "debug.openExplorerOnEnd": true,
+        "debug.focusEditorOnBreak": false,
+        "debug.internalConsoleOptions": "openOnSessionStart",
+        //"debug.console.fontFamily": "Free Pixel",
+        "accessibility.hideAccessibleView": true,
+        "extensions.ignoreRecommendations": true,
+
+        "C_Cpp.inlayHints.autoDeclarationTypes.enabled": false,
+        "C_Cpp.inlayHints.referenceOperator.enabled": false,
+        "C_Cpp.inlayHints.parameterNames.enabled": false,
+        "C_Cpp.inlayHints.parameterNames.suppressWhenArgumentContainsName": true,
+
+        "cmake.parallelJobs": 4,
+
+        "typescript.surveys.enabled": false,
+        "workbench.enableExperiments": false,
+        "workbench.settings.enableNaturalLanguageSearch": false,
+        "typescript.disableAutomaticTypeAcquisition": true,
+        "update.enableWindowsBackgroundUpdates": false,
+        "telemetry.telemetryLevel": "crash",
+        "update.mode": "none",
+
+        //"trailing-spaces.syntaxIgnore": ["diff"],
+
+        "files.trimTrailingWhitespace": false,
+        "files.associations": {
+            "**/Microsoft Visual Studio/**/MSVC/**/include/**": "cpp",
+            "**/msys64/**/include/**": "cpp",
+            "*.mpp": "cpp",
+            "*.cppm": "cpp",
+            "*.h++": "cpp",
+        },
+    }
+}
