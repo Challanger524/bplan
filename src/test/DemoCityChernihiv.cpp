@@ -55,20 +55,31 @@ void Test::DemoCityChernihiv()
 		//TaxUnit(kind::region, "Автономна Республіка Крим", {}),
 	};
 
-	auto &unit = // FOP
-		tuRoot.
-		units[0]. // 1
-		units[0]. // 2
-		units[0]. // 3
-		units[0]. // 4
-		units[0]. // 5
-		units[0]. // 6
-		units[0]. // 7
-		units[0]. // 8
-		units[1]; // 9
+	auto &fops = // FOP
+		tuRoot.   // 1 - country
+		units[0]. // 2 - oblast Che
+		units[0]. // 3 - rayon  Che
+		units[0]. // 4 - hromada
+		units[0]. // 5 - miska
+		units[0]. // 6 - miska hromada Che
+		units[0]. // 7 - city Che
+		units[0]. // 8 - city rayon
+		units[0]. // 9 - physical
+		units[1]; // 10- FOP
 
-	unit.units.resize(100'000); // 10
-	for (auto &u : unit.units) u.is = unit.units[0].is;
+	fops.units.resize(100'000); // 10
+	for (auto &u : fops.units) u.is = fops.units[0].is;
+
+	auto &che_h = tuRoot.units[0].units[0].units[0].units[0].units[0]; // Чернігівська міська громада
+	che_h.budget = std::make_unique<Budget>();
+	che_h.budget->bcode = 2555900000;
+	che_h.budget->budgetY.resize(1);
+	che_h.budget->budgetY[0].year = std::chrono::year(2024);
+	che_h.budget->budgetY[0].incomesQ.resize(4);
+	che_h.budget->budgetY[0].incomesQ[0].incomesM.resize(3);
+	che_h.budget->budgetY[0].incomesQ[0].incomesM[0].table.resize(4);
+	//che_h.budget->budgetY[0].incomesQ[0].Load();
+	//exit(-1);
 
 	//BREAKPOINT();
 	[[maybe_unused]] TaxUnit &itis = tuRoot; // for clang vscode debugging

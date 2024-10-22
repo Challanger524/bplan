@@ -1,6 +1,9 @@
 #pragma once
 
+#include "data/budget.hpp"
+
 #include <type_traits>
+#include <memory>
 #include <vector>
 #include <string>
 #include <iostream>
@@ -93,6 +96,22 @@ enum TaxUnitKind : ulong
 using tuKind_t = std::underlying_type_t<TaxUnitKind>;
 }
 
+#if 0
+namespace buKind { // budget unit kind
+enum BudgetUnitKind : ushort {
+	none  = 0, //? and/or **hidden**?
+	generic  , // reserved for: custom trees
+	filter   , // has no underlying (detailed) data
+	budget   , // of administ unit (oblast, city,...): income/expanse/...
+	administ , // administrative division: country/oblast/rayon/hromada/<settlement>
+	taxelem  , // budget profiting/sucking entities: physical/juridicial, workers/FOPs/TOVs/...,
+	//taxpayer , //
+};
+
+using buKind_t = std::underlying_type_t<BudgetUnitKind>;
+}
+#endif
+
 // Gereralized budget unit representing sertain level/scope
 struct TaxUnit
 {
@@ -110,6 +129,9 @@ public:
 	//TaxUnit *root{nullptr}; //> necessity
 	TaxUnit *parent {nullptr};
 	TaxUnit *capital{nullptr}; //? deprecate
+
+	//Budget *budget{};
+	std::shared_ptr<Budget> budget{};
 
 	// sum
 	// diff //?
