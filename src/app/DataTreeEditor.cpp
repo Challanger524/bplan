@@ -25,19 +25,42 @@ void TaxUnitEdit(TaxUnit &unit, short level = -1)
 		im::SetNextItemOpen(true, ImGuiCond_Once);
 	}
 
+	//if (ImGui::TreeNodeEx(scast<const void *>(unit), bp::sett.tree.nodeFlags, "%s", scast<const char *>(unit)))
 	if (ImGui::TreeNodeEx(scast<const void *>(unit), bp::sett.tree.nodeFlags, "%s", scast<const char *>(unit)))
 	{
-		for (auto &tu : unit.units)
-			TaxUnitEdit(tu, level);
+		static const ImGuiTreeNodeFlags subtreeFlags =
+			ImGuiTreeNodeFlags_OpenOnArrow       |
+			ImGuiTreeNodeFlags_OpenOnDoubleClick |
+			ImGuiTreeNodeFlags_SpanAllColumns    |
+			ImGuiTreeNodeFlags_SpanAvailWidth    |
+			//ImGuiTreeNodeFlags_Framed            |
+			//ImGuiTreeNodeFlags_Bullet            |
+			//ImGuiTreeNodeFlags_Selected          |
+			//ImGuiTreeNodeFlags_SpanFullWidth     |
+			//ImGuiTreeNodeFlags_CollapsingHeader  | // TreePush()
+			0;
 
-		im::PushID(scast<const void *>(unit));
-#if 0 // test data storage/processing
+		if (unit.budget) {
+			im::Unindent();
+
+			if (ImGui::TreeNodeEx("##subtree", subtreeFlags))
+			{
+				if (unit.budget != nullptr) unit.budget->Edit();
+				im::TreePop();
+			}
+		}
+
+		// <<< recurse >>>
+		for (auto &tu : unit.units)	TaxUnitEdit(tu, level);
+		// <<< recurse >>>
+
+#if 1 // test data storage/processing // dynamic node addition
 		if (ImGui::SmallButton("+")) {
 			unit.units.emplace_back(TaxUnit(unit.units.empty() ? TaxUnit::kind::none : unit.units[0].is, "<+>"));
 			unit.InitChildsParent();
+			//unit.FormDisplay();
 		}
 #endif
-		im::PopID();
 
 		ImGui::TreePop();
 	}

@@ -60,6 +60,8 @@ using ulong  = unsigned long long;
 using uchar  = unsigned char;
 using uint   = unsigned int;
 
+using money = long double; // should be replaced with `moneycpp` - https://github.com/mariusbancila/moneycpp
+
 //#define ccast       const_cast
   #define scast      static_cast
 //#define dcast     dynamic_cast

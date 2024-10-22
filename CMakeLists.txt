@@ -77,6 +77,7 @@ target_compile_definitions(${LIBCONFIG_} PRIVATE LIBCONFIG_STATIC) #!workaround
 target_link_libraries     (${PROJECT_NAME} OpenGL::GL glfw imgui ${LIBCONFIG_})
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE
   "${CMAKE_SOURCE_DIR}/deps" # rooted dirs will be treated as SYSTEM, even if opposite stated explicitly (with: -I)
+  "${CMAKE_SOURCE_DIR}/deps/rapidcsv/src"
 )
 
 # # Add: custom build targets # #
@@ -84,7 +85,7 @@ add_custom_target(${PROJECT_NAME}-clean
   COMMENT "Cleaning `${PROJECT_NAME}` target:"
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
   COMMAND ${CMAKE_COMMAND} -DFILES_="${PROJECT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}.dir/src/"
-                           -P "misc/script/remove_recurse.cmake"
+                           -P "misc/cmake/remove_recurse.cmake"
 )
 
 add_custom_target(${PROJECT_NAME}-rebuild

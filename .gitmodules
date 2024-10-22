@@ -9,3 +9,6 @@
 	path = deps/libconfig
 	url = https://github.com/hyperrealm/libconfig
 	ignore = dirty
+[submodule "rapidcsv"]
+	path = deps/rapidcsv
+	url = https://github.com/d99kris/rapidcsv
