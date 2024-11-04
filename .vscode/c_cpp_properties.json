@@ -1,0 +1,27 @@
+{
+  "configurations": [
+    {
+      //"name": "Win32",
+      "name": "Config",
+      "includePath": [
+          "${workspaceFolder}/src/**"
+      ],
+      //"defines": ["_DEBUG", "_UNICODE", "UNICODE"],
+      //"windowsSdkVersion": "10.0.19041.0",
+      //"compilerPath": "cl.exe",
+      "cStandard":     "c23",
+      "cppStandard": "c++23",
+      //"intelliSenseMode": "${default}",
+      //"intelliSenseMode": "msvc-x64",
+      //"intelliSenseMode": "clang-x64",
+      "compilerArgs": [
+        //"/ifcSearchDir", "${workspaceFolder}/build/ifc",
+        "/Zc:char8_t-",
+        "-fno-char8_t"
+      ],
+      "configurationProvider": "ms-vscode.cmake-tools"
+      //"compileCommands": "${workspaceFolder}/build/clang-dbg/compile_commands.json"
+    }
+  ],
+  "version": 4
+}
