@@ -63,6 +63,7 @@ set_target_properties     (imgui PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRE
 target_link_libraries     (${PROJECT_NAME} OpenGL::GL glfw imgui)
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE
   "${CMAKE_SOURCE_DIR}/deps"
+  "${CMAKE_SOURCE_DIR}/deps/rapidcsv/src"
 ) # rooted dirs will be treated as SYSTEM, even if opposite stated explicitly (with: -I)
 
 

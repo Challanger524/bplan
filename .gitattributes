@@ -1,0 +1,13 @@
+# Sources
+*.hpp   text diff=cpp
+*.cpp   text diff=cpp
+
+# Tables
+*.csv   binary
+*.xls   binary
+*.xlsx  binary
+
+# Documents
+*.pdf   binary
+*.doc   binary
+*.docx  binary

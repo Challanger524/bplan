@@ -32,7 +32,7 @@ void App::MainMenuBar()
 	}
 
 #ifdef TESTING
-
+	this->test.Menu();
 #endif
 
 	im::EndMainMenuBar();

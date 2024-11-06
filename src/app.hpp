@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef TESTING
+#include "test.hpp"
+#endif
+
 class App
 {
 
@@ -21,7 +25,7 @@ private:
 
 public:
 #ifdef TESTING
-	//friend class Test;
-	//Test test{this};
+	friend class Test;
+	Test test{this};
 #endif
 };
