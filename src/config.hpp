@@ -20,6 +20,11 @@
 #  endif
 #endif
 
+#ifndef NDEBUG
+#define ONDEBUG(src_code) { src_code; }
+#else
+#define ONDEBUG(src_code)
+#endif
 
 //------------------------ Macro functions ------------------------------------
 
@@ -82,7 +87,7 @@ using ulong  = unsigned long long;
 using uchar  = unsigned char;
 using uint   = unsigned int;
 
-using money = long double; // should be replaced with `moneycpp` - https://github.com/mariusbancila/moneycpp
+using money_t = long double; // should be replaced with `moneycpp` - https://github.com/mariusbancila/moneycpp
 
 //#define ccast       const_cast
   #define scast      static_cast

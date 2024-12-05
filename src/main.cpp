@@ -4,12 +4,16 @@
 
 #include "app.hpp"
 
+#include "int/locale.hpp"
+
 #include <GLFW/glfw3.h>
 #include <imgui/imgui.h>
 #include <imgui/backends/imgui_impl_glfw.h>
 #include <imgui/backends/imgui_impl_opengl3.h>
 
+#include <locale>
 #include <iostream>
+#include <exception>
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -26,6 +30,16 @@ int main()
 	SetConsoleCP      (CP_UTF8);
 #endif
 
+	try {
+		//bp::locale = std::locale(bp::LOCALE_UA);
+		std::locale::global(std::locale(bp::LOCALE_UA));
+	}
+	catch (std::runtime_error &e) { // GCC/libstdc++ uses POSIX locales (not present on Win platform)
+		ONDEBUG(std::cerr << "EXCP: " << e.what() << '\n');
+		std::cerr << "Warn: locale '" << bp::LOCALE_UA << "' not found, falling back to '" << std::locale().name() << "' locale\n";
+		std::cerr << "Warn: some features will not be viewed/work properly (dates, money, text sorting,..)\n";
+		std::cerr << "\n";
+	}
 
 	//------------------------ init: GLFW ------------------------------------
 
@@ -103,7 +117,7 @@ int main()
 	App app;
 
 #ifdef TESTING
-
+	app.test.Enable(Test::CSV_TABLE);
 #endif
 
 	//------------------------ main loop: loop -------------------------------

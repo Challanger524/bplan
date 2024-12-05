@@ -16,6 +16,10 @@ void App::operator()(void)
 	this->MainMenuBar();
 	this->MainWindow();
 
+#ifdef TESTING
+	this->test();
+#endif
+
 	// Dispatch keyboard (shortcuts)
 	if (io.KeyCtrl) {
 		//if (im::IsKeyPressed(ImGuiKey_M, false)) bp::sett.showMainViewportMenuBar ^= true;
