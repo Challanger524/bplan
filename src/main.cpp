@@ -75,8 +75,8 @@ int main()
 		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 	}
 
-	//io.Fonts->AddFontFromFileTTF("res/fonts/FreePixel.ttf"  , 16.f, nullptr, io.Fonts->GetGlyphRangesCyrillic());
-	//io.Fonts->AddFontFromFileTTF("res/fonts/ProggyClean.ttf", 13.f, nullptr, io.Fonts->GetGlyphRangesCyrillic());
+	io.Fonts->AddFontFromFileTTF("res/fonts/FreePixel.ttf"  , 16.f, nullptr, io.Fonts->GetGlyphRangesCyrillic());
+	io.Fonts->AddFontFromFileTTF("res/fonts/ProggyClean.ttf", 13.f, nullptr, io.Fonts->GetGlyphRangesCyrillic());
 
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init(nullptr);
