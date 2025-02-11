@@ -1,24 +1,32 @@
-#include "test/csv/CsvTable.hpp" //
-#include "test/tests.hpp"        // test::CsvFilterT
+#include "test/csv/CsvTable.hpp"
+#include "test/tests.hpp"
+
+#include "int/budget/rapidcsv/imgui/sort.hpp"
+#include "UA/budget.hpp"
+#include "UA/budget/incomes.hpp"
+#include "bplan/chrono.hpp"
 
 #include <imgui.h>
 
 #include <array>
-#include <vector>
 #include <string>
 #include <chrono>
+#include <locale>
 #include <type_traits>
 #include <assert.h>
 
+using namespace UA::budget;
+using namespace UA::budget::incomes;
+//namespace bud = UA::budget;
+//namespace inc = UA::budget::incomes;
+
 namespace test {
-using namespace budget;
-using namespace budget::income;
 
 CsvTable::CsvTable()
 {
 	test::CsvFilterT(&this->csv);
 
-	labelI.fill(std::underlying_type_t<labe_e>(-1));
+	labelI.fill(std::underlying_type_t<label_e>(-1));
 
 	// Map header Indexes
 	const auto & headers = this->csv.GetColumnNames();
@@ -28,7 +36,7 @@ CsvTable::CsvTable()
 
 	// assert presence of all required headers //? replace assert with runtime error/exception
 	for (size_t i = 0; i < labelS.size(); i++)
-		assert(labelI[i] != std::underlying_type_t<labe_e>(-1));
+		assert(labelI[i] != std::underlying_type_t<label_e>(-1));
 }
 
 void CsvTable::operator()()
@@ -311,9 +319,6 @@ void CsvTable::operator()()
 
 	std::chrono::year_month period; // holds REP_PERIOD (converted)
 	auto timePeriod = csv.GetCell<string>(labelI[REP_PERIOD], 0);
-	//std::istringstream sstream(csv.GetCell<string>(labelI[REP_PERIOD], 0)); // holds REP_PERIOD (raw)
-	//std::chrono::from_stream(sstream, "%m.%Y", period);
-	//sstream >> std::chrono::parse("%m.%Y", period);
 	bp::chrono::from_stream(timePeriod, "%m.%Y", period);
 
 	//im::Text("%d:", period.year().operator int()); /*and*/ im::SameLine(); // display `year` as text
@@ -333,10 +338,6 @@ void CsvTable::operator()()
 		for (size_t row = 0; row < rowCount; /*++*/) // display months/quarters as tabs with a table (with recpective data part)
 		{
 			timePeriod = this->csv.GetCell<string>(labelI[REP_PERIOD], row);
-			//sstream.clear(); // `.str()` not clearing the state, 4uck you responsible STL vendors/commies
-			//sstream.str(timePeriod);
-			//sstream >> std::chrono::parse("%m.%Y", period);
-			//std::chrono::from_stream(sstream, "%m.%Y", period);
 			bp::chrono::from_stream(timePeriod, "%m.%Y", period);
 
 			//const bool beginTabItem = im::BeginTabItem(std::to_string(bp::chrono::get(period.month())).c_str(), nullptr, ImGuiTabItemFlags_NoPushId);
