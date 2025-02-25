@@ -35,12 +35,30 @@
         "accessibility.hideAccessibleView": true,
         "extensions.ignoreRecommendations": true,
 
+        "git.mergeEditor"     : true,
+        "git.ignoreSubmodules": true,
+        "git.detectSubmodules": false,
+        "git.showActionButton": { "commit": false, "sync": false },
+
         "C_Cpp.inlayHints.autoDeclarationTypes.enabled": false,
         "C_Cpp.inlayHints.referenceOperator.enabled": false,
         "C_Cpp.inlayHints.parameterNames.enabled": false,
         "C_Cpp.inlayHints.parameterNames.suppressWhenArgumentContainsName": true,
 
         "cmake.parallelJobs": 4,
+        "cmake.configureArgs": [
+            "-D_BOOST_SOURCE_DIR_=${workspaceFolder}/../boost",
+            //"-C", "${workspaceFolder}/misc/cmake/cache.cmake", // looks like multiple `-C` options can be passed
+            //"--graphviz=graph",
+            "-Wdev",
+            "-Wdeprecated",
+            "--check-system-vars",
+            "--warn-unused-vars",
+            //"--warn-uninitialized",
+            //"--debug-output",
+            //"--trace",
+            //"--trace-expand",
+        ],
 
         "typescript.surveys.enabled": false,
         "workbench.enableExperiments": false,
