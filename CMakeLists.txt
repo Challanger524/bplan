@@ -57,6 +57,24 @@ target_include_directories(imgui SYSTEM PUBLIC  "${IMGUI_SOURCE_DIR_}"
 target_compile_definitions(imgui        PRIVATE IMGUI_USER_CONFIG="${PROJECT_SOURCE_DIR}/src/conf/imconfig.h")
 set_target_properties     (imgui PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED ON)
 
+# Setup: Boost:: #
+if(NOT EXISTS "${_BOOST_SOURCE_DIR_}/boost.png")
+  message(FATAL_ERROR
+    "_BOOST_SOURCE_DIR_='${_BOOST_SOURCE_DIR_}' - invalid boost path\n"
+    "-D_BOOST_SOURCE_DIR_=<boost_path> define must be passed to the cmake command")
+endif()
+
+list(APPEND BOOST_INCLUDE_LIBRARIES config)
+
+# ::locale
+if (MINGW AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  set(BOOST_LOCALE_ENABLE_STD    OFF CACHE BOOL "" FORCE)
+  set(BOOST_LOCALE_ENABLE_WINAPI YES CACHE BOOL "" FORCE)
+  list(APPEND BOOST_INCLUDE_LIBRARIES locale)
+  target_link_libraries(${PROJECT_NAME} Boost::locale)
+endif()
+
+add_subdirectory("${_BOOST_SOURCE_DIR_}" "${CMAKE_BINARY_DIR}/deps/boost" EXCLUDE_FROM_ALL)
 
 # # Apply: project dependencies # #
 
@@ -69,17 +87,9 @@ target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE
 
 # # Add: custom build targets # #
 
-add_custom_target(${PROJECT_NAME}-clean
-  COMMENT "Cleaning `${PROJECT_NAME}` target:"
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-  COMMAND ${CMAKE_COMMAND} -DFILES_="${PROJECT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}.dir/src/"
-                           -P "misc/cmake/remove_recurse.cmake"
-)
-
-add_custom_target(${PROJECT_NAME}-rebuild
-  COMMENT "Rebuilding `${PROJECT_NAME}` target:"
-  DEPENDS ${PROJECT_NAME}-clean
-  COMMAND ${CMAKE_COMMAND} --build "." --target ${PROJECT_NAME}
+add_custom_target( ${PROJECT_NAME}-clean
+  COMMENT "Target `${PROJECT_NAME}` - clean"
+  COMMAND ${CMAKE_COMMAND} -E rm -rf -- "${PROJECT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}.dir/src/"
 )
 
 
@@ -94,3 +104,19 @@ add_custom_target(${PROJECT_NAME}-rebuild
 #cmake_path(GET CMAKE_CACHEFILE_DIR FILENAME PRESET_)
 #message(${CMAKE_CACHEFILE_DIR})
 #message(${PRESET_})
+
+#[[
+add_custom_target( ${PROJECT_NAME}-rebuild
+  COMMENT "Target `${PROJECT_NAME}` - rebuild"
+  DEPENDS ${PROJECT_NAME}-clean
+  COMMAND ${CMAKE_COMMAND} --build "." --target ${PROJECT_NAME}
+  USES_TERMINAL # enables instant console output
+)#]]
+
+#[[ Same as `-clean`, but uses cmake script and can accept list of files/folders
+add_custom_target( ${PROJECT_NAME}-clean-batch
+  COMMENT "Target `${PROJECT_NAME}` - clean-batch:"
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  COMMAND ${CMAKE_COMMAND} -DFILES_="${PROJECT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}.dir/src/"
+                           -P "misc/cmake/remove_recurse.cmake"
+)#]]

@@ -15,6 +15,14 @@
 #include <iostream>
 #include <exception>
 
+#include <util/wignore-push.inl>
+
+#if defined(__MINGW32__) && defined(__GNUC__) && !defined(__clang__)
+#include <boost/locale.hpp>
+#endif
+
+#include <util/wignore-pop.inl>
+
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -31,8 +39,17 @@ int main()
 #endif
 
 	try {
-		//bp::locale = std::locale(bp::LOCALE_UA);
-		std::locale::global(std::locale(bp::LOCALE_UA));
+#if defined(__MINGW32__) && defined(__GNUC__) && !defined(__clang__) // GCC relies on POSIX locales
+		boost::locale::generator loc_gen;                // WinAPI locales:
+		std::locale locale =     loc_gen(bp::LOCALE_UA); // utf-8 sort - yes, calendar names - no
+#else // boost::locale messes things up, like name(): *; and uncaught exceptions on formatting
+		std::locale locale = std::locale(bp::LOCALE_UA);
+#endif
+		ONDEBUG(std::cout << "Trace: Locale(): "   << std::locale(  ).name() << '\n');
+		//ONDEBUG(std::cout << "Trace: Locale(\"\"): " << std::locale("").name() << '\n'); // exception on mingw gcc
+		ONDEBUG(std::cout << "Trace: locale  : "   << locale         .name() << '\n');
+
+		std::locale::global(locale);
 	}
 	catch (std::runtime_error &e) { // GCC/libstdc++ uses POSIX locales (not present on Win platform)
 		ONDEBUG(std::cerr << "EXCP: " << e.what() << '\n');
