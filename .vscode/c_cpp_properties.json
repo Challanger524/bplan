@@ -16,8 +16,6 @@
       //"intelliSenseMode": "clang-x64",
       "compilerArgs": [
         //"/ifcSearchDir", "${workspaceFolder}/build/ifc",
-        "/Zc:char8_t-",
-        "-fno-char8_t"
       ],
       "configurationProvider": "ms-vscode.cmake-tools"
       //"compileCommands": "${workspaceFolder}/build/clang-dbg/compile_commands.json"

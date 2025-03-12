@@ -14,6 +14,11 @@
 #define BPLAN_CONFIG_PCH // `config.hpp` presence mark
 #endif
 
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <SDKDDKVer.h> // for boost::context assembling
+#endif
+
 #if (!defined(NDEBUG) || defined(TESTS_IN_APP)) && !defined(NO_TESTS_IN_APP)
 #  ifndef TESTING
 #  define TESTING
@@ -68,8 +73,7 @@
 //------------------------ Options and modifications --------------------------
 
 //#define MOD_CHAR8_T // enable `char8_t` stream `operator<<` overloads
-
-#define LIB_LIBCONFIG
+//#define LIB_LIBCONFIG
 
 namespace      ImGui {} // `Dear ImGui` namespace pre-declaration (to alias it in the next line)
 namespace im = ImGui;   // global alias for `ImGui::` namespace
@@ -88,6 +92,10 @@ using uchar  = unsigned char;
 using uint   = unsigned int;
 
 using money_t = long double; // should be replaced with `moneycpp` - https://github.com/mariusbancila/moneycpp
+
+/*
+#define when      if*/
+#define elif else if
 
 //#define ccast       const_cast
   #define scast      static_cast
