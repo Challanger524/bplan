@@ -64,7 +64,10 @@ if(NOT EXISTS "${_BOOST_SOURCE_DIR_}/boost.png")
     "-D_BOOST_SOURCE_DIR_=<boost_path> define must be passed to the cmake command")
 endif()
 
-list(APPEND BOOST_INCLUDE_LIBRARIES config)
+list(APPEND BOOST_INCLUDE_LIBRARIES config beast)
+
+# ::beast # file:///./src/lib/src_beast.cpp
+target_compile_definitions(${PROJECT_NAME} PRIVATE "BOOST_BEAST_SEPARATE_COMPILATION")
 
 # ::locale
 if (MINGW AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -76,9 +79,15 @@ endif()
 
 add_subdirectory("${_BOOST_SOURCE_DIR_}" "${CMAKE_BINARY_DIR}/deps/boost" EXCLUDE_FROM_ALL)
 
+# [Workaround] https://github.com/boostorg/beast/issues/672#issuecomment-318225620
+# Link missing: `ws2_32` library for windows sockets with boost::asio
+if (MINGW)
+  target_link_libraries(boost_asio INTERFACE ws2_32) # mswsock wsock32
+endif()
+
 # # Apply: project dependencies # #
 
-target_link_libraries     (${PROJECT_NAME} OpenGL::GL glfw imgui)
+target_link_libraries     (${PROJECT_NAME} OpenGL::GL glfw imgui Boost::beast)
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE
   "${CMAKE_SOURCE_DIR}/deps"
   "${CMAKE_SOURCE_DIR}/deps/rapidcsv/src"

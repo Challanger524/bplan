@@ -8,7 +8,6 @@
 #include "UA/budget/incomes.hpp"
 
 #include <rapidcsv.h>
-#include <imgui.h>
 
 #include <array>
 
