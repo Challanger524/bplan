@@ -26,6 +26,6 @@ private:
 public:
 #ifdef TESTING
 	friend class Test;
-	Test test{this};
+	Test test{};
 #endif
 };

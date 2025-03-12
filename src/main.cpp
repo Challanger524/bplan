@@ -134,7 +134,7 @@ int main()
 	App app;
 
 #ifdef TESTING
-	app.test.Enable(Test::CSV_TABLE);
+	app.test.Enable(Test::CSV_GET);
 #endif
 
 	//------------------------ main loop: loop -------------------------------

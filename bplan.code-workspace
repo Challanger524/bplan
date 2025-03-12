@@ -9,6 +9,7 @@
             "deps/**": true,
             "**/ChernoOpenGL-CMake/**": true,
             "**/MSVC/**/include/**": true,
+            "**/Windows Kits/**/Include/**": true,
         },
 
         "terminal.integrated.env.windows": {
@@ -44,6 +45,10 @@
         "C_Cpp.inlayHints.referenceOperator.enabled": false,
         "C_Cpp.inlayHints.parameterNames.enabled": false,
         "C_Cpp.inlayHints.parameterNames.suppressWhenArgumentContainsName": true,
+
+        //"C_Cpp.formatting": "disabled",
+        //"C_Cpp.formatting": "vcFormat",
+        //"C_Cpp.vcFormat.indent.namespaceContents": false,
 
         "cmake.parallelJobs": 4,
         "cmake.options.statusBarVisibility": "visible",
@@ -81,13 +86,17 @@
 
         //"trailing-spaces.syntaxIgnore": ["diff"],
 
-        "files.trimTrailingWhitespace": false,
+        "files.insertFinalNewline"    : true,
+        "files.trimTrailingWhitespace": true,
         "files.associations": {
             "**/Microsoft Visual Studio/**/MSVC/**/include/**": "cpp",
             "**/msys64/**/include/**": "cpp",
             "*.mpp": "cpp",
             "*.cppm": "cpp",
             "*.h++": "cpp",
+            "*.ipp": "cpp",
+            "*.rh" : "cpp"
         },
+        "C_Cpp.clang_format_fallbackStyle": "none",
     }
 }
