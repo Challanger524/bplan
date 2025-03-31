@@ -35,6 +35,14 @@
 #  include <boost/beast/version.hpp>
 #include <util/wignore-pop.inl>
 
+
+namespace bplan {
+#ifndef __clang__
+extern const std::chrono::time_zone *timezone;
+#endif
+}
+
+
 namespace test {
 
 
@@ -141,7 +149,19 @@ void CsvGet::DrawModalInput()
 		// Check if already downloaded
 		if (fs::exists(csvPath)) { // check if requested file is present on disk
 			csvExists = true;   //! fs::file_size(csvPath) - add human readable wrapper for file  size (not just bytes)
-			feedback = std::format("File already exist on disk:\n{}\n{}\n{}", csvPath.string(), bp::fs::to_string(fs::last_write_time(csvPath)), bp::fs::filesize(fs::file_size(csvPath)));
+
+			std::string ftime;
+
+			#ifndef __clang__
+			const auto ftime_ftt = fs::last_write_time(csvPath); // _ftt = file_time_type
+			if (bp::timezone) ftime = std::format("{} {}", bp::chrono::to_string(bp::fs::to_local(*bp::timezone, ftime_ftt)), bp::timezone->name());
+			else              ftime = bp::fs::to_string(ftime_ftt);
+			#else
+			ftime = bp::fs::to_string(fs::last_write_time(csvPath)) + " UTC";
+			#endif
+
+			feedback = std::format("File already exist on disk:\n{}\n{}\n{}", csvPath.string(), ftime, bp::fs::filesize(fs::file_size(csvPath)));
+			//feedback += std::format("\nUTC: {} UTC", bp::fs::to_string(fs::last_write_time(csvPath)));
 		}
 		else feedback = std::format("File: {}\nLocal copies: none", csvPath.string());
 
@@ -347,7 +367,17 @@ void CsvDownload(const fs::path &csvPath, const std::string &csvQuery, std::stri
 			csvOfstream << net::buffers_to_string(response.body().data());
 			csvOfstream.close();
 
-			feedback = std::format("downloaded from network:\n{}\n{}\n{}", csvPath.string(), bp::fs::to_string(fs::last_write_time(csvPath)), bp::fs::filesize(fs::file_size(csvPath)));
+			std::string ftime;
+
+			#ifndef __clang__
+			const auto ftime_ftt = fs::last_write_time(csvPath); // _ftt = file_time_type
+			if (bp::timezone) ftime = std::format("{} {}", bp::chrono::to_string(bp::fs::to_local(*bp::timezone, ftime_ftt)), bp::timezone->name());
+			else              ftime = bp::fs::to_string(ftime_ftt) + " UTC";
+			#else
+			ftime = bp::fs::to_string(fs::last_write_time(csvPath)) + " UTC";
+			#endif
+
+			feedback = std::format("Downloaded from network:\n{}\n{}\n{}", csvPath.string(), ftime, bp::fs::filesize(fs::file_size(csvPath)));
 		}
 		else {
 			std::cerr << "Trace: `response.body()`:\n" << net::buffers_to_string(response.body().data()) << "\n";
@@ -394,7 +424,6 @@ void CsvDownload(const fs::path &csvPath, const std::string &csvQuery, std::stri
 		}
 		#endif // Validate header params - text/csv, attachment, filename=<value>
 
-		feedback = "loaded: from network";
 	}
 	catch (std::exception& e) { throw std::runtime_error("file download attempt failed with: "s + e.what()); }
 

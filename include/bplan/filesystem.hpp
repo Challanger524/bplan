@@ -12,7 +12,13 @@ namespace bplan::fs { // contains <filesystem> extensions
 
 
 // Human-readable time formatting (without miliseconds part like: 12:12:12.12345)
-inline std::string to_string(std::filesystem::file_time_type v) { return std::format("{:%F %R}:{:.2}", v, std::format("{:%S}", v)); }
+inline std::string to_string(const std::filesystem::file_time_type &v) { return std::format("{:%F %R}:{:.2}", v, std::format("{:%S}", v)); }
+
+#ifndef __clang__
+inline auto to_local(const std::chrono::time_zone &timezone, const std::filesystem::file_time_type &v) {
+	return timezone.to_local(std::chrono::clock_cast<std::chrono::system_clock>(v));
+}
+#endif
 
 // Human-readable size formatting
 inline std::string filesize(uintmax_t fsize)

@@ -41,6 +41,9 @@ inline void  from_stream(const auto &idate, auto format, auto &odate) // ! Clang
 }
 #endif // __clang__
 
+// Human-readable time formatting (without miliseconds part like: 12:12:12.12345)
+template<class Clock, class Duration> std::string to_string(const std::chrono::time_point<Clock, Duration>& v) { return std::format("{:%F %R}:{:.2}", v, std::format("{:%S}", v)); }
+
 } // namespace bplan::chrono
 
 

@@ -12,15 +12,14 @@
 #include <imgui/backends/imgui_impl_opengl3.h>
 
 #include <locale>
+#include <chrono>
 #include <iostream>
 #include <exception>
 
 #include <util/wignore-push.inl>
-
-#if defined(__MINGW32__) && defined(__GNUC__) && !defined(__clang__)
-#include <boost/locale.hpp>
-#endif
-
+# if defined(__MINGW32__) && defined(__GNUC__) && !defined(__clang__)
+#  include <boost/locale.hpp>
+# endif
 #include <util/wignore-pop.inl>
 
 #ifdef _WIN32
@@ -28,6 +27,12 @@
 #include <windows.h>
 #include <locale.h>
 #endif // _WIN32
+
+namespace bplan {
+#ifndef __clang__
+const std::chrono::time_zone *timezone{nullptr};
+#endif
+}
 
 int main()
 {
@@ -57,6 +62,21 @@ int main()
 		std::cerr << "Warn: some features will not be viewed/work properly (dates, money, text sorting,..)\n";
 		std::cerr << "\n";
 	}
+
+#ifndef __clang__ // setup UA time zone
+	try { bplan::timezone = std::chrono::locate_zone("Europe/Kiev"); }
+	catch(const std::runtime_error& e) { std::cerr << "EXCEP: " << e.what() << "\n"; bplan::timezone = nullptr; }
+#endif
+
+#if !defined(NDEBUG) && !defined(__clang__)
+	try {
+		std::cout << "Trace: Timezone name: " << std::chrono::current_zone()->name() << "\n";
+		std::cout << "Trace: Sys   time : " << std::chrono::system_clock::now()                                        << "\n";
+		std::cout << "Trace: Local time : " << std::chrono::current_zone()->to_local(std::chrono::system_clock::now()) << "\n";
+		std::cout << "Trace: Europe/Kiev: " << std::chrono::locate_zone("Europe/Kiev")->to_local(std::chrono::system_clock::now()) << "\n";
+	}
+	catch(const std::runtime_error& e) { std::cerr << "EXCEP: " << e.what() << "\n"; }
+#endif
 
 	//------------------------ init: GLFW ------------------------------------
 
