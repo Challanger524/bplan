@@ -6,6 +6,7 @@
 #include "UA/budget/incomes.hpp"
 #include "UA/budget/expenses/program.hpp"
 #include "int/budget/rapidcsv/imgui/imguiDrawEmptyTable.hpp"
+#include "bplan/boost/net.hpp"
 #include "bplan/filesystem.hpp"
 #include "bplan/chrono.hpp"
 #include "bplan/ctype.hpp"
@@ -51,14 +52,18 @@ namespace rcv   = rapidcsv    ;
 namespace asio  = boost::asio ;
 namespace beast = boost::beast;
 
-namespace net {
-using namespace boost::asio;
+/* namespace net {
+using namespace boost::asio ;
 using namespace boost::beast;
-}
+      namespace http = boost::beast::http;
+using                  boost::asio::ip::tcp;
+//using                  boost::asio::ip::udp;
+} */
 
 namespace fs  = std::filesystem;
 
 using namespace UA::budget;
+using namespace std::literals::chrono_literals;
 using namespace std::literals::string_literals;
 using namespace std::literals::string_view_literals;
 
@@ -68,6 +73,7 @@ void DrawCsvTableIncS    (const rcv::Document &csv); // Draw Csv Table Local   I
 void DrawCsvTableExpProgS(const rcv::Document &csv); // Draw Csv Table Local   Expanses Static
 void DrawBudgetInput(budget &budget); // Draw budget input forms
 void OpenbudgetGet(std::string_view request, auto &response);
+void OpenbudgetGet(std::string_view request, auto &response, std::chrono::steady_clock::duration timeout);
 void        ZeroExpandBud(std::span<      char> code); // modifies input by adding missing zeros
 std::string GetProcessBud(std::span<const char> code); // returns clean 10-digit string
 std::string ComposeCsvFname(const budget &budget); // Compose CSV filename
@@ -346,18 +352,19 @@ void DrawBudgetInput(budget &budget) // Draw budget input forms
 }
 
 void CsvDownload(const fs::path &csvPath, const std::string &csvQuery, std::string &feedback)
-{ //? make it async with timout (sync cannot have timeout)
+{
 #if 1 // dynamic_body
 	try {
-		// Receive response from network
+		// Receive response from the openbudget.gov.ua
 		net::http::response<net::http::dynamic_body> response;
-		OpenbudgetGet(csvQuery, response);
+		OpenbudgetGet(csvQuery, response, 4s);
 
 		#if 1  // log
 		std::cout << "\n";
 		std::cout << csvPath << "\n";
-		if (const auto it = response.base().find("content-type"       ); it != response.base().end()) std::cout << "content-type: "        << it->value() << "\n";
-		if (const auto it = response.base().find("content-disposition"); it != response.base().end()) std::cout << "content-disposition: " << it->value() << "\n";
+		if (const auto it = response.base().find("content-type"       ); it != response.base().end()) std::cout << "content-type: '"        << it->value() << "'\n";
+		if (const auto it = response.base().find("content-disposition"); it != response.base().end()) std::cout << "content-disposition: '" << it->value() << "'\n";
+		//std::cout << "\nTrace: `response`:\n" << response << "\n";
 		std::cout << "\nTrace: `response.base()`:\n" << response.base() << "\n";
 		#endif // log
 
@@ -476,10 +483,21 @@ void OpenbudgetGet(std::string_view request, auto &response)
 		net::http::read(tstream, buffer, response);
 
 		tstream.socket().shutdown(net::ip::tcp::socket::shutdown_both);
-		//std::cout << "\nTrace:\n" << response << std::endl;
 	}
 	catch (std::exception& e) { std::cerr << "Exception: " << e.what() << "\n"; throw e; }
+}
+void OpenbudgetGet(std::string_view request, auto &response, std::chrono::steady_clock::duration timeout)
+{
+	const std::string target = std::string(API_PATH_BASE) + std::string(request);
+	/*  */std::string error; //? replace with std::error_code or boost::beast::error_code or custom one
 
+	using namespace std::literals::chrono_literals;
+	std::cout << "Trace: target: " << target << "\n";
+	net::io_context ioc;
+	std::make_shared<net::Session<decltype(response)>>(ioc, response, &error)->Set(API_HOST, net::PORT_HTTP, target, timeout); //? std::remove_reference_t<decltype(response)>
+	ioc.run(); // Dequeue and execute (this is a blocking call)
+
+	if (!error.empty()) throw std::runtime_error("Error: " + error + "\n");
 }
 
 //std::array splitchars = {' ', '-'}; // then use std::ranges - constexpr, but not hashed

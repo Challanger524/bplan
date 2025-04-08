@@ -53,6 +53,7 @@ int main()
 		ONDEBUG(std::cout << "Trace: Locale(): "   << std::locale(  ).name() << '\n');
 		//ONDEBUG(std::cout << "Trace: Locale(\"\"): " << std::locale("").name() << '\n'); // exception on mingw gcc
 		ONDEBUG(std::cout << "Trace: locale  : "   << locale         .name() << '\n');
+		std::cout << '\n';
 
 		std::locale::global(locale);
 	}
@@ -74,8 +75,9 @@ int main()
 		std::cout << "Trace: Sys   time : " << std::chrono::system_clock::now()                                        << "\n";
 		std::cout << "Trace: Local time : " << std::chrono::current_zone()->to_local(std::chrono::system_clock::now()) << "\n";
 		std::cout << "Trace: Europe/Kiev: " << std::chrono::locate_zone("Europe/Kiev")->to_local(std::chrono::system_clock::now()) << "\n";
+		std::cout << '\n';
 	}
-	catch(const std::runtime_error& e) { std::cerr << "EXCEP: " << e.what() << "\n"; }
+	catch(const std::runtime_error& e) { std::cerr << "EXCEP: " << e.what() << "\n\n"; }
 #endif
 
 	//------------------------ init: GLFW ------------------------------------
