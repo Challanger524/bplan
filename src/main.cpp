@@ -43,16 +43,20 @@ int main()
 	SetConsoleCP      (CP_UTF8);
 #endif
 
+	std::locale locUA; // should be alive for program's lifespan
 	try {
 #if defined(__MINGW32__) && defined(__GNUC__) && !defined(__clang__) // GCC relies on POSIX locales
 		boost::locale::generator loc_gen;                // WinAPI locales:
-		std::locale locale =     loc_gen(bp::LOCALE_UA); // utf-8 sort - yes, calendar names - no
+		locUA =                  loc_gen(bp::LOCALE_UA); //   utf-8 sort - yes, calendar names - no
 #else // boost::locale messes things up, like name(): *; and uncaught exceptions on formatting
-		std::locale locale = std::locale(bp::LOCALE_UA);
+		locUA = std::locale(bp::LOCALE_UA);
 #endif
-		ONDEBUG(std::cout << "Trace: Locale(): "   << std::locale(  ).name() << '\n');
+
+		std::locale locale = std::locale(locUA, new bp::no_separator(locUA)); // `locale` manages `facet` de-alloc through ref-counter // fix for broken stream output after thousands separator appearance from locale numeric facet
+
 		//ONDEBUG(std::cout << "Trace: Locale(\"\"): " << std::locale("").name() << '\n'); // exception on mingw gcc
-		ONDEBUG(std::cout << "Trace: locale  : "   << locale         .name() << '\n');
+		ONDEBUG(std::cout << "Trace: Locale(): "   << std::locale(  ).name() << '\n');
+		ONDEBUG(std::cout << "Trace: locale  : "   <<      locale    .name() << '\n');
 		std::cout << '\n';
 
 		std::locale::global(locale);
