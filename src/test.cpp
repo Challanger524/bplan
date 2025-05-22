@@ -1,6 +1,7 @@
 #include "test.hpp"
 #include "test/csv/CsvTable.hpp"
 #include "test/csv/CsvGet.hpp"
+#include "test/sql/sqlite_orm.hpp"
 
 #include <imgui.h>
 
@@ -24,7 +25,8 @@ void Test::Menu() {
 			if (im::MenuItem("console: income Chernihiv 23 month (filter: T)")) { test::CsvFilterT(); }
 			im::SeparatorText("loop");
 			if (im::MenuItem("imgui  : income Chernihiv 23 month (table)"))     { this->Switch(CSV_TABLE); }
-			if (im::MenuItem("imgui  : download budget"                  ))     { this->Switch(CSV_GET  ); }
+			if (im::MenuItem("network: boost::beast download budget"     ))     { this->Switch(CSV_GET  ); }
+			if (im::MenuItem("sql    : SQLite ORM"                       ))     { this->Switch(SQL_L_ORM); }
 			im::Unindent();
 		}
 
@@ -45,6 +47,7 @@ void Test::Switch(const testsE test)
 		switch (test) {
 			case CSV_TABLE: this->tests[test] = std::make_unique<test::CsvTable>(); break;
 			case CSV_GET  : this->tests[test] = std::make_unique<test::CsvGet  >(); break;
+			case SQL_L_ORM: this->tests[test] = std::make_unique<test::SqliteOrm>(); break;
 
 			default: assert(false); break;
 		}
