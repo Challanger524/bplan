@@ -160,7 +160,7 @@ int main()
 	App app;
 
 #ifdef TESTING
-	app.test.Enable(Test::CSV_GET);
+	app.test.Enable(Test::SQL_L_ORM);
 #endif
 
 	//------------------------ main loop: loop -------------------------------

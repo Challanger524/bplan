@@ -8,3 +8,6 @@
 [submodule "rapidcsv"]
 	path = deps/rapidcsv
 	url = https://github.com/d99kris/rapidcsv
+[submodule "sqlite_orm"]
+	path = deps/sqlite_orm
+	url = https://github.com/fnc12/sqlite_orm

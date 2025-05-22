@@ -57,6 +57,11 @@ target_include_directories(imgui SYSTEM PUBLIC  "${IMGUI_SOURCE_DIR_}"
 target_compile_definitions(imgui        PRIVATE IMGUI_USER_CONFIG="${PROJECT_SOURCE_DIR}/src/conf/imconfig.h")
 set_target_properties     (imgui PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED ON)
 
+# Setup: SQLite ORM #
+set(SQLITE_ORM_ENABLE_CXX_20 ON CACHE BOOL "" FORCE)
+add_subdirectory("${CMAKE_SOURCE_DIR}/deps/sqlite_orm") # depends on 'SQLite' that must be visible to `find_package()`
+# https://discourse.cmake.org/t/correct-usage-of-findsqlite3-module-in-windows/174
+
 # Setup: Boost:: #
 if(NOT EXISTS "${_BOOST_SOURCE_DIR_}/boost.png")
   message(FATAL_ERROR
@@ -87,10 +92,11 @@ endif()
 
 # # Apply: project dependencies # #
 
-target_link_libraries     (${PROJECT_NAME} OpenGL::GL glfw imgui Boost::beast)
+target_link_libraries     (${PROJECT_NAME} OpenGL::GL glfw imgui sqlite_orm::sqlite_orm Boost::beast)
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE
   "${CMAKE_SOURCE_DIR}/deps"
   "${CMAKE_SOURCE_DIR}/deps/rapidcsv/src"
+  "${CMAKE_SOURCE_DIR}/deps/sqlite_orm/include/sqlite_orm"
 ) # rooted dirs will be treated as SYSTEM, even if opposite stated explicitly (with: -I)
 
 

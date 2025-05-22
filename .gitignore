@@ -55,6 +55,14 @@ deps/
 *.cfg
 *.cfg+
 
+## Databases:
+*.sqlite3
+*.sqlite
+*.s3db
+*.sl3
+*.db3
+*.db
+
 ## Windows/Linux/other file copys/duplicates or '_commented' file (dummys)
 _*
 *.[1-9]
