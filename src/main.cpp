@@ -56,7 +56,7 @@ int main()
 
 		//ONDEBUG(std::cout << "Trace: Locale(\"\"): " << std::locale("").name() << '\n'); // exception on mingw gcc
 		ONDEBUG(std::cout << "Trace: Locale(): "   << std::locale(  ).name() << '\n');
-		ONDEBUG(std::cout << "Trace: locale  : "   <<      locale    .name() << '\n');
+		ONDEBUG(std::cout << "Trace: locale  : "   <<      locUA     .name() << '\n');
 		std::cout << '\n';
 
 		std::locale::global(locale);
@@ -97,11 +97,11 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);                // 3.0+
 	glfwWindowHint(GLFW_OPENGL_PROFILE       , GLFW_OPENGL_CORE_PROFILE); // 3.2+
 	glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
-	glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+	//glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
 	//glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);   // Not supported by ImGui yet - will make ImGui to disappear
 	//glfwWindowHint(GLFW_DECORATED, GLFW_FALSE); // Means loosing control of the window position. Maybe can be done through connecting ImGui and GLFW move callbacks
 
-	GLFWwindow *const window = glfwCreateWindow(1280, 720, "bplan", nullptr, nullptr);
+	GLFWwindow *const window = glfwCreateWindow(830, 500, "bplan", nullptr, nullptr);
 	if (!window)
 	{ glfwTerminate(); return -1; }
 
@@ -149,6 +149,8 @@ int main()
 #ifdef IMGUI_HAS_VIEWPORT
 	std::cout << " +viewport";
 #endif
+	std::cout << std::endl;
+
 	std::cout << std::endl;
 
 
