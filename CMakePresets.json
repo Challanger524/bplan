@@ -10,8 +10,9 @@
       "environment": {
       },
       "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
         "CMAKE_BUILD_TYPE": "MinSizeRel",
-        "_DEFINITIONS_": ""
+        "_DEFINITIONS_": null
       }
     },
     {
@@ -41,6 +42,7 @@
       "name": "linux-base",
       "inherits": "base",
       "hidden": true,
+      "condition": { "type": "notEquals", "lhs": "${hostSystemName}", "rhs": "Windows" },
       "cacheVariables": {
         "_FLAGS_COMPILE_0_": "-fno-show-column;-ftemplate-backtrace-limit=5;-Wall;-Wextra;-Wpedantic;-Wold-style-cast;-Woverloaded-virtual;-Wno-unused-function;-Wno-reorder"
       }
@@ -64,6 +66,7 @@
         "_FLAGS_COMPILE_2_": "-g3;-Og"
       }
     },
+    { "name": "gcc-dbg-win", "displayName": "1. Win: GCC - debug", "inherits": "gcc-dbg", "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" }, "cacheVariables": { "CMAKE_TOOLCHAIN_FILE": null } },
     {
       "name": "test-gcc-lto",
       "displayName": "Test: GCC - LTO (ODR check)",
@@ -106,6 +109,7 @@
         "_FLAGS_COMPILE_2_": "-g3;-O0"
       }
     },
+    { "name": "clang-dbg-win", "displayName": "2. Win: Clang - debug", "inherits": "clang-dbg", "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" }, "cacheVariables": { "CMAKE_TOOLCHAIN_FILE": null } },
     {
       "name": "clang-san-addr",
       "displayName": "2. Clang - sanitize=address",
