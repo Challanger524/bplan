@@ -14,6 +14,7 @@ git clone --recurse --shallow-submodules "https://github.com/Challanger524/bplan
 ```
 
 ## Prerequisites
+- **vcpkg** package manager to configure preset `MSVC` on windows
 - **Boost** source path must be passed to CMake to build with `MSYS2`: `GCC` and `Clang`:
 
     <details><summary>examples</summary>

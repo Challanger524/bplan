@@ -62,33 +62,43 @@ set(SQLITE_ORM_ENABLE_CXX_20 ON CACHE BOOL "" FORCE)
 add_subdirectory("${CMAKE_SOURCE_DIR}/deps/sqlite_orm") # depends on 'SQLite' that must be visible to `find_package()`
 # https://discourse.cmake.org/t/correct-usage-of-findsqlite3-module-in-windows/174
 
-# Setup: Boost:: #
-if(NOT EXISTS "${_BOOST_SOURCE_DIR_}/boost.png")
-  message(FATAL_ERROR
-    "_BOOST_SOURCE_DIR_='${_BOOST_SOURCE_DIR_}' - invalid boost path\n"
-    "-D_BOOST_SOURCE_DIR_=<boost_path> define must be passed to the cmake command")
-endif()
+# # vcpkg # #
+string(FIND "${CMAKE_TOOLCHAIN_FILE}" "vcpkg" VCPKG_)
 
-list(APPEND BOOST_INCLUDE_LIBRARIES config beast)
+if(NOT ${VCPKG_} EQUAL -1) # vcpkg - on
+  find_package(Boost REQUIRED COMPONENTS beast)
 
-# ::beast # file:///./src/lib/src_beast.cpp
-target_compile_definitions(${PROJECT_NAME} PRIVATE "BOOST_BEAST_SEPARATE_COMPILATION")
+else() # vcpkg - off
+  # Setup: Boost libraries #
+  if(NOT EXISTS "${_BOOST_SOURCE_DIR_}/boost.png")
+    message(FATAL_ERROR "_BOOST_SOURCE_DIR_='${_BOOST_SOURCE_DIR_}' - must contain absolute boost path")
+  endif()
 
-# ::locale
-if (MINGW AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-  set(BOOST_LOCALE_ENABLE_STD    OFF CACHE BOOL "" FORCE)
-  set(BOOST_LOCALE_ENABLE_WINAPI YES CACHE BOOL "" FORCE)
-  list(APPEND BOOST_INCLUDE_LIBRARIES locale)
-  target_link_libraries(${PROJECT_NAME} Boost::locale)
-endif()
+  list(APPEND BOOST_INCLUDE_LIBRARIES beast)
 
-add_subdirectory("${_BOOST_SOURCE_DIR_}" "${CMAKE_BINARY_DIR}/deps/boost" EXCLUDE_FROM_ALL)
+  # Boost::beast
+  target_compile_definitions(${PROJECT_NAME} PRIVATE "BOOST_BEAST_SEPARATE_COMPILATION") # file:///./src/lib/src_beast.cpp
+  target_sources            (${PROJECT_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/src/lib/_src_beast.cpp")
 
-# [Workaround] https://github.com/boostorg/beast/issues/672#issuecomment-318225620
-# Link missing: `ws2_32` library for windows sockets with boost::asio
-if (MINGW)
-  target_link_libraries(boost_asio INTERFACE ws2_32) # mswsock wsock32
-endif()
+  # Link missing: `ws2_32` library for windows sockets required by Boost::asio on MinGW build
+  # [Workaround] https://github.com/boostorg/beast/issues/672#issuecomment-318225620
+  if (MINGW)
+    target_link_libraries(${PROJECT_NAME} ws2_32) # mswsock wsock32
+  endif()
+
+  # Boost::locale # GCC relies only on POSIX locales, so external locale is needed
+  if (MINGW AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set(BOOST_LOCALE_ENABLE_ICU    OFF CACHE BOOL "" FORCE)
+    set(BOOST_LOCALE_ENABLE_STD    OFF CACHE BOOL "" FORCE)
+    set(BOOST_LOCALE_ENABLE_WINAPI YES CACHE BOOL "" FORCE)
+    list(APPEND BOOST_INCLUDE_LIBRARIES locale)
+    target_link_libraries(${PROJECT_NAME} Boost::locale)
+  endif()
+
+  add_subdirectory("${_BOOST_SOURCE_DIR_}" "${CMAKE_BINARY_DIR}/deps/boost" EXCLUDE_FROM_ALL)
+
+endif() # vcpkg: on/off
+
 
 # # Apply: project dependencies # #
 
@@ -110,6 +120,11 @@ add_custom_target( ${PROJECT_NAME}-clean
   COMMENT "Target `${PROJECT_NAME}` - clean"
   COMMAND ${CMAKE_COMMAND} -E rm -rf -- "${PROJECT_BINARY_DIR}/CMakeFiles/${PROJECT_NAME}.dir/src/"
 )
+
+
+# # Misc # #
+
+set(maybe_unused_ "${_BOOST_SOURCE_DIR_}") # supress warning for unused cmake variables
 
 
 ###Stash###
