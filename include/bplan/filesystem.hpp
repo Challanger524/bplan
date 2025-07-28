@@ -46,7 +46,7 @@ namespace bplan::ostream {
 
 
 // Human-readable time formatting (without miliseconds part like: 12:12:12.12345)
-inline std::ostream &operator<<(std::ostream &os, const std::filesystem::file_time_type v) { return os << bplan::fs::to_string(v); }
+inline std::ostream &operator<<(std::ostream &os, std::filesystem::file_time_type v) { return os << bplan::fs::to_string(v); }
 
 
 } // namespace bplan::ostream

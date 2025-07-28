@@ -34,7 +34,7 @@
       "toolset":      { "strategy": "external", "value": "host=x64" },
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
-        "_FLAGS_COMPILE_2_": "/EHscr;/sdl"
+        "_FLAGS_COMPILE_2_": "/EHscr;/sdl;/bigobj"
       }
     },
     {

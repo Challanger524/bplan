@@ -17,11 +17,11 @@ template<bplan::ConstChar CChar, size_t N> inline constexpr size_t lenof (CChar 
 
 # include <string>
 # if 1 // Op 2: constexpr specialized
-inline constexpr size_t lenof(const  char    * s) { return std::char_traits< char    >::length(s); } // length of c-string
-inline constexpr size_t lenof(const wchar_t  * s) { return std::char_traits<wchar_t  >::length(s); } // length of c-string
-inline constexpr size_t lenof(const  char8_t * s) { return std::char_traits< char8_t >::length(s); } // length of c-string
-inline constexpr size_t lenof(const  char16_t* s) { return std::char_traits< char16_t>::length(s); } // length of c-string
-inline constexpr size_t lenof(const  char32_t* s) { return std::char_traits< char32_t>::length(s); } // length of c-string
+inline constexpr size_t lenof(const  char     *s) { return std::char_traits< char    >::length(s); } // length of c-string
+inline constexpr size_t lenof(const wchar_t   *s) { return std::char_traits<wchar_t  >::length(s); } // length of c-string
+inline constexpr size_t lenof(const  char8_t  *s) { return std::char_traits< char8_t >::length(s); } // length of c-string
+inline constexpr size_t lenof(const  char16_t *s) { return std::char_traits< char16_t>::length(s); } // length of c-string
+inline constexpr size_t lenof(const  char32_t *s) { return std::char_traits< char32_t>::length(s); } // length of c-string
 
 # else // Op 3: constexpr auto
 # include <type_traits>

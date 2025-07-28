@@ -20,7 +20,7 @@ template<class T> concept CanHold_utf8_not = !CanHold_utf8<T>;                  
 template<CanHold_utf8_not T> inline short compare(const T &l, const T &r) { return l < r ? -1 : (r < l) ? +1 : 0; }
 
 // Asserted (statically) template definition (not for instantiation)
-template<class T> inline short compare       (const std::string & , const std::string & ) { static_assert(false, "custom template specialization required for given type" ); return {}; }
+template<class T> inline short compare       (const std::string & , const std::string & ) { static_assert(false, "custom template specialization required for given type"); return {}; }
 // Specialization for `utf-8` string that respects global locale compare rules
 template<> inline short compare<std:: string>(const std::string &l, const std::string &r) { return std::locale().operator()(l, r) ? -1 : std::locale().operator()(r, l) ? +1 : 0; }
 template<> inline short compare<uint64_t    >(const std::string &l, const std::string &r) { return compare(std::stoull(l), std::stoull(r)); }

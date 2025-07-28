@@ -50,9 +50,12 @@ template<class Response> class Session : public std::enable_shared_from_this<Ses
 	std::string *error;
 
 private:
-	void fail(net::error_code ec, char const* what) { if (this->error) *this->error = std::format("{}: {}", what, ec.message()); } // Report a failure
+	void fail(net::error_code ec, char const *what) { if (this->error) *this->error = std::format("{}: {}", what, ec.message()); } // Report a failure
 
 public:
+	Session           (const Session&) = delete;
+	Session& operator=(const Session&) = delete;
+
 	// Objects are constructed with a strand to ensure that handlers do not execute concurrently
 	Session(net::io_context &ioc, Response &response, std::string *error = nullptr) : response{response}, resolver{net::make_strand(ioc)}, tstream{net::make_strand(ioc)}, error{error} {}
 

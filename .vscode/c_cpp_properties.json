@@ -1,9 +1,11 @@
 {
+  "version": 4,
   "configurations": [
     {
       //"name": "Win32",
       "name": "Config",
       "includePath": [
+          "${workspaceFolder}/include/**",
           "${workspaceFolder}/src/**"
       ],
       //"defines": ["_DEBUG", "_UNICODE", "UNICODE"],
@@ -20,6 +22,5 @@
       "configurationProvider": "ms-vscode.cmake-tools"
       //"compileCommands": "${workspaceFolder}/build/clang-dbg/compile_commands.json"
     }
-  ],
-  "version": 4
+  ]
 }
