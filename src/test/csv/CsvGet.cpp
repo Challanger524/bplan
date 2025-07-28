@@ -11,6 +11,7 @@
 #include "bplan/chrono.hpp"
 #include "bplan/ctype.hpp"
 #include "bplan/lenof.hpp"
+#include "bplan/fail.hpp"
 
 #include <imgui.h>
 #include <rapidcsv.h>
@@ -24,6 +25,7 @@
 #include <format>
 #include <fstream>
 #include <iostream>
+#include <expected>
 #include <stdexcept>
 #include <filesystem>
 #include <assert.h>
@@ -67,17 +69,76 @@ using namespace std::literals::chrono_literals;
 using namespace std::literals::string_literals;
 using namespace std::literals::string_view_literals;
 
-void CsvDownload(const fs::path &csvPath, const std::string &csvQuery, std::string &feedback);
+using Fail    = bplan::Fail;
+using Success = bplan::Success;
+
+Fail CsvDownload(const fs::path &csvPath, const std::string &csvQuery, std::string &feedback);
 void DrawCsvTableGenIncS (const rcv::Document &csv); // Draw Csv Table General Incomes  Static
 void DrawCsvTableIncS    (const rcv::Document &csv); // Draw Csv Table Local   Incomes  Static
 void DrawCsvTableExpProgS(const rcv::Document &csv); // Draw Csv Table Local   Expanses Static
 void DrawBudgetInput(budget &budget); // Draw budget input forms
-void OpenbudgetGet(std::string_view request, auto &response);
-void OpenbudgetGet(std::string_view request, auto &response, std::chrono::steady_clock::duration timeout);
 void        ZeroExpandBud(std::span<      char> code); // modifies input by adding missing zeros
 std::string GetProcessBud(std::span<const char> code); // returns clean 10-digit string
 std::string ComposeCsvFname(const budget &budget); // Compose CSV filename
 std::string ComposeCsvQuery(const budget &budget); // Compose API query
+
+// throwing error handling, out-param
+void OpenbudgetGet(std::string_view request, auto &response);
+void OpenbudgetGet(std::string_view request, auto &response, std::chrono::steady_clock::duration timeout);
+
+// non-throwing error handling versions with `Response` output via return `std::expected` (not an out param)
+template<class Response> std::expected<Response, std::string> OpenbudgetGet(std::string_view request)
+{
+	const std::string target = std::string(API_PATH_BASE) + std::string(request);
+	std::cout << "Trace: target: " << target << "\n";
+
+	try {
+		net::io_context                 context ;
+		net::ip::tcp::resolver resolver(context);
+		net::tcp_stream        tstream (context);
+
+		net::http::request<net::http::empty_body> request;
+		request.method(net::http::verb::get);
+		request.version(11);
+		request.set(net::http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+		request.set(net::http::field::host      , API_HOST);
+		request.keep_alive(false);
+		request.target(target);
+
+		const auto      resolved = resolver.resolve(API_HOST, "80");
+		tstream.connect(resolved);
+		net::http::write(tstream, request);
+
+		net::flat_buffer         buffer;
+		     Response                    response;
+		net::http::read(tstream, buffer, response);
+
+		net::error_code erc;
+		tstream.socket().shutdown(net::ip::tcp::socket::shutdown_both, erc);
+		if (erc && erc != net::errc::not_connected) return std::unexpected(erc.message());
+
+		return response;
+	}
+	catch (std::exception& e) { return std::unexpected(e.what()); }
+}
+template<class Response> std::expected<Response, std::string> OpenbudgetGet(std::string_view request, std::chrono::steady_clock::duration timeout)
+{
+	const std::string target = std::string(API_PATH_BASE) + std::string(request);
+	/*  */std::string error; //? replace with std::error_code or boost::beast::error_code or custom one
+
+	//using namespace std::literals::chrono_literals;
+	std::cout << "Trace: target: " << target << "\n";
+
+	net::io_context                          ioc;
+	     Response                                 response;
+	std::make_shared<net::Session<Response>>(ioc, response, &error)->Set(API_HOST, net::PORT_HTTP, target, timeout);
+	ioc.run(); // Dequeue and execute (this is a blocking call)
+
+	if (!error.empty()) return std::unexpected(error);
+
+	return response;
+}
+
 
 CsvGet::CsvGet()
 {
@@ -130,13 +191,24 @@ void CsvGet::DrawModalInput()
 
 	DrawBudgetInput(this->budget);
 
-	if (im::Button(API_PATH_PING)) { // ping api.openbudget.gov.ua
+	if (im::Button(API_PATH_PING)) // ping api.openbudget.gov.ua
+	{
+	#if 1 // std::ecpected
+		//auto response = OpenbudgetGet<net::http::response<net::http::string_body>>(API_PATH_PING);
+		const auto response = OpenbudgetGet<net::http::response<net::http::string_body>>(API_PATH_PING);
+		if        (response) feedback = "ping response: (" + std::to_string(response->result_int()) + ") " + response->body();
+		else                 feedback = "Ping failed, reason: " + response.error();
+
+	#else // try-catch
 		try {
 			net::http::response<net::http::string_body> response;
 			OpenbudgetGet(API_PATH_PING, response);
+
 			feedback = "ping response: (" + std::to_string(response.result_int()) + ") " + response.body();
 		}
 		catch (std::exception& e) { feedback = "ping attempt failed with: "s + e.what(); }
+	#endif // std::ecpected/try-catch
+
 	}
 
 	// Advance with provided budget input
@@ -156,7 +228,7 @@ void CsvGet::DrawModalInput()
 		if (fs::exists(csvPath)) { // check if requested file is present on disk
 			csvExists = true;   //! fs::file_size(csvPath) - add human readable wrapper for file  size (not just bytes)
 
-			std::string ftime;
+			std::string ftime; // file time
 
 			#ifndef __clang__
 			const auto ftime_ftt = fs::last_write_time(csvPath); // _ftt = file_time_type
@@ -229,11 +301,12 @@ void CsvGet::DrawModalInput()
 		if (im::Button(std::format("{} (from network)##bt_load_net", csvExists ? "refresh" : "download").c_str())) {
 			executed  = false;
 			csvExists = false;
-			try { // to download the new file through internet
-				CsvDownload(csvPath, csvQuery, feedback); // throws
-				this->csv.Load(csvPath.string(), rcv::LabelParams(), rcv::SeparatorParams(';', false, true, true, false), rcv::ConverterParams(), rcv::LineReaderParams(false, '#', true));
-			}
-			catch (std::exception& e) { feedback = e.what(); }
+
+			// Try to download the new file through internet
+			const auto fail = CsvDownload(csvPath, csvQuery, feedback);
+			if (fail) feedback = "File download attempt failed, reason: "s + fail.what();
+			else      this->csv.Load(csvPath.string(), rcv::LabelParams(), rcv::SeparatorParams(';', false, true, true, false), rcv::ConverterParams(), rcv::LineReaderParams(false, '#', true));
+
 		}
 	}
 
@@ -351,9 +424,97 @@ void DrawBudgetInput(budget &budget) // Draw budget input forms
 	}
 }
 
-void CsvDownload(const fs::path &csvPath, const std::string &csvQuery, std::string &feedback)
+Fail CsvDownload(const fs::path &csvPath, const std::string &csvQuery, std::string &feedback)
 {
 #if 1 // dynamic_body
+
+#if 1 // std::expected
+	auto response_e = OpenbudgetGet<net::http::response<net::http::dynamic_body>>(csvQuery, 4s); // _e - expected
+	if (response_e)
+	{
+		auto response = *response_e;
+
+	#if 1  // log
+		std::cout << "\n";
+		std::cout << csvPath << "\n";
+		if (const auto it = response.base().find("content-type"       ); it != response.base().end()) std::cout << "content-type: '"        << it->value() << "'\n";
+		if (const auto it = response.base().find("content-disposition"); it != response.base().end()) std::cout << "content-disposition: '" << it->value() << "'\n";
+		//std::cout << "\nTrace: `response`:\n" << response << "\n";
+		std::cout << "\nTrace: `response.base()`:\n" << response.base() << "\n";
+	#endif // log
+
+		// Check response, if OK - write received file on disk
+		if (response.result() == net::http::status::ok)
+		{
+			std::ofstream csvOfstream(csvPath, std::fstream::trunc);
+			csvOfstream << net::buffers_to_string(response.body().data()); // write
+			csvOfstream.close();
+
+			std::string ftime; // file time
+
+		#ifndef __clang__
+			const auto ftime_ftt = fs::last_write_time(csvPath); // _ftt = file_time_type
+			if (bp::timezone) ftime = std::format("{} {}", bp::chrono::to_string(bp::fs::to_local(*bp::timezone, ftime_ftt)), bp::timezone->name());
+			else              ftime = bp::fs::to_string(ftime_ftt) + " UTC";
+		#else // Clang has no chrono::format (c++20) support -_-
+			ftime = bp::fs::to_string(fs::last_write_time(csvPath)) + " UTC";
+		#endif
+
+			feedback = std::format("Downloaded from network:\n{}\n{}\n{}", csvPath.string(), ftime, bp::fs::filesize(fs::file_size(csvPath)));
+		}
+		else {
+			std::cerr << "Trace: `response.body()`:\n" << net::buffers_to_string(response.body().data()) << "\n";
+			return Fail("(" + std::to_string(response.result_int()) + "):\n" + net::buffers_to_string(response.body().data()));
+			//throw std::runtime_error("(" + std::to_string(response.result_int()) + "):\n" + net::buffers_to_string(response.body().data()));
+		}
+
+	#if 1 // Validate header params - text/csv, attachment, filename=<value>
+		if (response.result() == net::http::status::ok)
+		{
+			// validate: content-type
+			if (const auto it = response.base().find("content-type"); it != response.base().end())
+				if (it->value().find("text/csv") == beast::string_view::npos)
+					throw std::runtime_error("'content-type' is not 'text/csv'");
+
+			// validate: content-type content-disposition //? write own general parser, since next minimalistic code parses fewer cases
+			std::string filename; //? perfectly, way more cases should be parsed: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Disposition
+			if (const auto it = response.base().find("content-disposition"); it != response.base().end())
+			{
+				const auto &value = it->value(); // content-disposition field parameter (value)
+				constexpr auto paramAttachment = "attachment"sv;
+				constexpr auto paramFilename   =   "filename"sv;
+
+				size_t pos = 0;
+				if (pos = value.find(paramAttachment, pos); pos != value.npos) // attachment
+				{
+					pos += paramAttachment.size();
+
+					if (pos = value.find(paramFilename, pos); pos != value.npos) { //? filename (only '=' and not '*=')
+						pos += paramFilename.size();
+						//if (value[pos] == '*') { pos += 2; ... } // not implemented full-case parsing
+						if (value[pos] != '=') return Fail(std::format("parse_error: value[pos] != '=', it is: '{}'", value[pos]));
+						pos++;
+						if (value.find(';', pos) != value.npos) return Fail("parse_error: value.find(';') != value.npos (other parameters were not expected)");
+
+						filename = value.substr(pos);
+
+					} else return Fail("'content-disposition' has no 'filename' parameter");
+				} else return     Fail("'content-disposition' has no 'attachment' parameter");
+			} else return         Fail("'content-disposition' header is missing in response"); //? feedback vs fail
+
+			// Compare filenames: expected (composed) filename VS from 'content-disposition' response header parameter
+			if (csvPath.filename().string() != filename) {
+				const std::string report = "Warn: 'content-disposition' has different file name: expected vs actual:\n" + csvPath.filename().string() + '\n' + filename;
+				std::cout << report << '\n';
+				feedback += "\n\n" + report;
+			}
+		}
+	#endif // Validate header params - text/csv, attachment, filename=<value>
+	}
+
+	return Success();
+
+#else // try-catch
 	try {
 		// Receive response from the openbudget.gov.ua
 		net::http::response<net::http::dynamic_body> response;
@@ -376,13 +537,13 @@ void CsvDownload(const fs::path &csvPath, const std::string &csvQuery, std::stri
 
 			std::string ftime;
 
-			#ifndef __clang__
+		#ifndef __clang__
 			const auto ftime_ftt = fs::last_write_time(csvPath); // _ftt = file_time_type
 			if (bp::timezone) ftime = std::format("{} {}", bp::chrono::to_string(bp::fs::to_local(*bp::timezone, ftime_ftt)), bp::timezone->name());
 			else              ftime = bp::fs::to_string(ftime_ftt) + " UTC";
-			#else
+		#else
 			ftime = bp::fs::to_string(fs::last_write_time(csvPath)) + " UTC";
-			#endif
+		#endif
 
 			feedback = std::format("Downloaded from network:\n{}\n{}\n{}", csvPath.string(), ftime, bp::fs::filesize(fs::file_size(csvPath)));
 		}
@@ -433,6 +594,9 @@ void CsvDownload(const fs::path &csvPath, const std::string &csvQuery, std::stri
 
 	}
 	catch (std::exception& e) { throw std::runtime_error("file download attempt failed with: "s + e.what()); }
+
+	return {};
+#endif // std::expected / try-catch
 
 #else //    file_body
 	fs::remove(csvPath);
