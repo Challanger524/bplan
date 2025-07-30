@@ -14,6 +14,7 @@ public:
 	Fail(std::string_view what) : message(what) {}
 	Fail(      Success&&)       : message(    ) {}
 	Fail(const Success& ) = delete;
+	Fail(const Fail   & ) = delete;
 	operator bool() const { return !message.empty(); }
 	const std::string& what() const { return message; }
 };

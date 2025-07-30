@@ -81,7 +81,7 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER":   "clang",
         "CMAKE_CXX_COMPILER": "clang++",
-        "_FLAGS_COMPILE_1_": "-ferror-limit=1"
+        "_FLAGS_COMPILE_1_": "-ferror-limit=1;-fexperimental-library"
       }
     },
     {

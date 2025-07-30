@@ -8,14 +8,16 @@
 #include <vector>
 #include <string>
 #include <chrono>
-#include <algorithm>   // sort (wrapper)
+#include <algorithm>
+#include <execution>
 #include <type_traits>
 #include <assert.h>
 
 namespace bplan {
 
 // STL wrapper that accepts `container` instead of `container.begin()`, `container.end()` iterators
-constexpr inline auto sort(auto &container, auto comparator = std::less<>{}) { return std::sort(container.begin(), container.end(), comparator); }
+constexpr inline auto sort(                    auto &container, auto comparator = std::less<>{}) { return std::sort(             container.begin(), container.end(), comparator); }
+constexpr inline auto sort(auto &&exec_policy, auto &container, auto comparator = std::less<>{}) { return std::sort(exec_policy, container.begin(), container.end(), comparator); }
 
 struct SortSpec {
 	size_t column{};
@@ -33,15 +35,16 @@ inline void SortBudget(std::vector<vecstr_t> &table, std::span<const SortSpec> s
 {
 	using enum UA::budget::type_e;
 	/*
-	std::sort(table.begin(), table.end(), [&labelT, &specs](const vecstr_t &lhs, const vecstr_t &rhs)*/
-	 bp::sort(table                     , [&labelT, &specs](const vecstr_t &lhs, const vecstr_t &rhs)
+	std::sort(table.begin(), table.end(), [&labelT, &specs](const vecstr_t &lhs, const vecstr_t &rhs)
+	 bp::sort(table                     , [&labelT, &specs](const vecstr_t &lhs, const vecstr_t &rhs) */
+	 bp::sort(std::execution::par, table, [&labelT, &specs](const vecstr_t &lhs, const vecstr_t &rhs) // faster (in debug)
 	{ // lambda body start
 		for (const auto &spec : specs)
 		{
 			short         comp{};               // compare result
 			const size_t &column = spec.column; // real column `idx` from the main csv storage
 			const auto   &type = labelT[column];
-			switch (      type)
+			switch       (type)
 			{
 				case UINT32_:
 				case UINT64_: comp = bp::compare<               uint64_t>(lhs[column], rhs[column]); break;
@@ -52,7 +55,7 @@ inline void SortBudget(std::vector<vecstr_t> &table, std::span<const SortSpec> s
 				default     : assert(false && "individual switch case for each 'type_e' required" ); break;
 			}
 
-			if (comp == 0  ) continue; // skip this, but compare another column specified in next `spec` : specs
+			if (comp == 0  ) continue;        // skip this, but compare another column specified in next `spec` : specs
 			if (spec.ascend) return comp < 0;
 			else             return comp > 0;
 		}
