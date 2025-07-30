@@ -5,7 +5,7 @@
 #endif //  https://stackoverflow.com/a/32628153/11753532
 
 #include "test/tests.hpp"
-#include "UA/budget/incomes.hpp"
+#include "UA/budget/local/incomes.hpp"
 
 #include <rapidcsv.h>
 

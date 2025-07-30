@@ -3,7 +3,7 @@
 
 #include "int/budget/rapidcsv/imgui/sort.hpp"
 #include "UA/budget.hpp"
-#include "UA/budget/incomes.hpp"
+#include "UA/budget/local/incomes.hpp"
 #include "bplan/chrono.hpp"
 
 #include <imgui.h>

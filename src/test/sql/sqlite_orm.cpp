@@ -1,6 +1,6 @@
 #include "test/sql/sqlite_orm.hpp"
 
-#include "UA/budget/incomes.hpp"
+#include "UA/budget/local/incomes.hpp"
 #include "bplan/chrono.hpp"
 
 #include <sqlite_orm.h>

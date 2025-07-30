@@ -7,7 +7,7 @@
 namespace UA::budget::expenses::program {
 
 enum  label_e : size_t                                        { REP_PERIOD , FUND_TYP , COD_BUDGET , COD_CONS_MB_PK , COD_CONS_MB_PK_NAME , COD_CONS_MB_FK , COD_CONS_MB_FK_NAME , ZAT_AMT , PLANS_AMT , FAKT_AMT, LABEL_COUNT_ }; // e - enum
-inline constexpr std::array<    type_e , LABEL_COUNT_> labelT { DATE_/*YM*/, CHAR_    , UINT64_    , UINT16_        , STRING_             , UINT16_        , STRING_             , MONEY_  , MONEY_    , MONEY_  ,/*, PERCENT*/ }; // T - type
+inline constexpr std::array<    type_e , LABEL_COUNT_> labelT { DATE_/*YM*/, CHAR_    , STRING_    , UINT16_        , STRING_             , UINT16_        , STRING_             , MONEY_  , MONEY_    , MONEY_  ,/*, PERCENT*/ }; // T - type
 inline constexpr std::array<    size_t , LABEL_COUNT_> labelP { REP_PERIOD , FUND_TYP , COD_BUDGET , COD_CONS_MB_PK , COD_CONS_MB_PK_NAME , COD_CONS_MB_FK , COD_CONS_MB_FK_NAME , ZAT_AMT , PLANS_AMT , FAKT_AMT /*, DCYP   */ }; // P - pos
 inline constexpr std::array<const char*, LABEL_COUNT_> labelS {"REP_PERIOD","FUND_TYP","COD_BUDGET","COD_CONS_MB_PK","COD_CONS_MB_PK_NAME","COD_CONS_MB_FK","COD_CONS_MB_FK_NAME","ZAT_AMT","PLANS_AMT","FAKT_AMT"/*,DCYP    */ }; // S - str
 inline constexpr std::array<const char*, LABEL_COUNT_> labelD { // D - description

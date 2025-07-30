@@ -3,11 +3,11 @@
 #include "UA/budget.hpp"
 #include "UA/budget/api.hpp"
 #include "UA/budget/general/incomes.hpp"
-#include "UA/budget/incomes.hpp"
-#include "UA/budget/expenses/program.hpp"
+#include "UA/budget/local/incomes.hpp"
+#include "UA/budget/local/expenses/program.hpp"
 #include "int/budget/rapidcsv/imgui/imguiDrawEmptyTable.hpp"
-#include "bplan/boost/net.hpp"
 #include "bplan/filesystem.hpp"
+#include "bplan/boost/net.hpp"
 #include "bplan/chrono.hpp"
 #include "bplan/ctype.hpp"
 #include "bplan/lenof.hpp"
@@ -53,14 +53,6 @@ namespace test {
 namespace rcv   = rapidcsv    ;
 namespace asio  = boost::asio ;
 namespace beast = boost::beast;
-
-/* namespace net {
-using namespace boost::asio ;
-using namespace boost::beast;
-      namespace http = boost::beast::http;
-using                  boost::asio::ip::tcp;
-//using                  boost::asio::ip::udp;
-} */
 
 namespace fs  = std::filesystem;
 
