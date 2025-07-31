@@ -11,7 +11,6 @@
 #include "bplan/chrono.hpp"
 #include "bplan/ctype.hpp"
 #include "bplan/lenof.hpp"
-#include "bplan/fail.hpp"
 
 #include <imgui.h>
 #include <rapidcsv.h>
@@ -61,10 +60,7 @@ using namespace std::literals::chrono_literals;
 using namespace std::literals::string_literals;
 using namespace std::literals::string_view_literals;
 
-using Fail    = bplan::Fail;
-using Success = bplan::Success;
-
-Fail CsvDownload(const fs::path &csvPath, const std::string &csvQuery, std::string &feedback);
+std::expected<void, std::string> CsvDownload(const fs::path &csvPath, const std::string &csvQuery, std::string &feedback);
 void DrawCsvTableGenIncS (const rcv::Document &csv); // Draw Csv Table General Incomes  Static
 void DrawCsvTableIncS    (const rcv::Document &csv); // Draw Csv Table Local   Incomes  Static
 void DrawCsvTableExpProgS(const rcv::Document &csv); // Draw Csv Table Local   Expanses Static
@@ -96,6 +92,9 @@ template<class Response> std::expected<Response, std::string> OpenbudgetGet(std:
 		request.set(net::http::field::host      , API_HOST);
 		request.keep_alive(false);
 		request.target(target);
+		request.set(net::http::field::accept    , "*/*");
+
+		//std::cout << "\n" << request.base() << "\n";
 
 		const auto      resolved = resolver.resolve(API_HOST, "80");
 		tstream.connect(resolved);
@@ -107,7 +106,7 @@ template<class Response> std::expected<Response, std::string> OpenbudgetGet(std:
 
 		net::error_code erc;
 		tstream.socket().shutdown(net::ip::tcp::socket::shutdown_both, erc);
-		if (erc && erc != net::errc::not_connected) return std::unexpected(erc.message());
+		if (erc && erc != net::errc::not_connected) return std::unexpected("shutdown: " + erc.message());
 
 		return response;
 	}
@@ -185,8 +184,7 @@ void CsvGet::DrawModalInput()
 
 	if (im::Button(API_PATH_PING)) // ping api.openbudget.gov.ua
 	{
-	#if 1 // std::ecpected
-		//auto response = OpenbudgetGet<net::http::response<net::http::string_body>>(API_PATH_PING);
+	#if 1 // std::expected
 		const auto response = OpenbudgetGet<net::http::response<net::http::string_body>>(API_PATH_PING);
 		if        (response) feedback = "ping response: (" + std::to_string(response->result_int()) + ") " + response->body();
 		else                 feedback = "Ping failed, reason: " + response.error();
@@ -295,9 +293,9 @@ void CsvGet::DrawModalInput()
 			csvExists = false;
 
 			// Try to download the new file through internet
-			const auto fail = CsvDownload(csvPath, csvQuery, feedback);
-			if (fail) feedback = "File download attempt failed, reason: "s + fail.what();
-			else      this->csv.Load(csvPath.string(), rcv::LabelParams(), rcv::SeparatorParams(';', false, true, true, false), rcv::ConverterParams(), rcv::LineReaderParams(false, '#', true));
+			const auto ok = CsvDownload(csvPath, csvQuery, feedback);
+			if (ok) this->csv.Load(csvPath.string(), rcv::LabelParams(), rcv::SeparatorParams(';', false, true, true, false), rcv::ConverterParams(), rcv::LineReaderParams(false, '#', true));
+			else feedback = "File download attempt failed, reason: "s + ok.error();
 
 		}
 	}
@@ -416,13 +414,14 @@ void DrawBudgetInput(budget &budget) // Draw budget input forms
 	}
 }
 
-Fail CsvDownload(const fs::path &csvPath, const std::string &csvQuery, std::string &feedback)
+std::expected<void, std::string> CsvDownload(const fs::path &csvPath, const std::string &csvQuery, std::string &feedback)
 {
 #if 1 // dynamic_body
 
 #if 1 // std::expected
 	auto response_e = OpenbudgetGet<net::http::response<net::http::dynamic_body>>(csvQuery, 4s); // _e - expected
-	if (response_e)
+	if (!response_e) return std::unexpected(response_e.error());
+	else
 	{
 		auto response = *response_e;
 
@@ -456,7 +455,7 @@ Fail CsvDownload(const fs::path &csvPath, const std::string &csvQuery, std::stri
 		}
 		else {
 			std::cerr << "Trace: `response.body()`:\n" << net::buffers_to_string(response.body().data()) << "\n";
-			return Fail("(" + std::to_string(response.result_int()) + "):\n" + net::buffers_to_string(response.body().data()));
+			return std::unexpected("(" + std::to_string(response.result_int()) + "):\n" + net::buffers_to_string(response.body().data()));
 			//throw std::runtime_error("(" + std::to_string(response.result_int()) + "):\n" + net::buffers_to_string(response.body().data()));
 		}
 
@@ -484,15 +483,15 @@ Fail CsvDownload(const fs::path &csvPath, const std::string &csvQuery, std::stri
 					if (pos = value.find(paramFilename, pos); pos != value.npos) { //? filename (only '=' and not '*=')
 						pos += paramFilename.size();
 						//if (value[pos] == '*') { pos += 2; ... } // not implemented full-case parsing
-						if (value[pos] != '=') return Fail(std::format("parse_error: value[pos] != '=', it is: '{}'", value[pos]));
+						if (value[pos] != '=') return std::unexpected(std::format("parse_error: value[pos] != '=', it is: '{}'", value[pos]));
 						pos++;
-						if (value.find(';', pos) != value.npos) return Fail("parse_error: value.find(';') != value.npos (other parameters were not expected)");
+						if (value.find(';', pos) != value.npos) return std::unexpected("parse_error: value.find(';') != value.npos (other parameters were not expected)");
 
 						filename = value.substr(pos);
 
-					} else return Fail("'content-disposition' has no 'filename' parameter");
-				} else return     Fail("'content-disposition' has no 'attachment' parameter");
-			} else return         Fail("'content-disposition' header is missing in response"); //? feedback vs fail
+					} else return std::unexpected("'content-disposition' has no 'filename' parameter");
+				} else return     std::unexpected("'content-disposition' has no 'attachment' parameter");
+			} else return         std::unexpected("'content-disposition' header is missing in response"); //? feedback vs fail
 
 			// Compare filenames: expected (composed) filename VS from 'content-disposition' response header parameter
 			if (csvPath.filename().string() != filename) {
@@ -504,7 +503,7 @@ Fail CsvDownload(const fs::path &csvPath, const std::string &csvQuery, std::stri
 	#endif // Validate header params - text/csv, attachment, filename=<value>
 	}
 
-	return Success();
+	return {};
 
 #else // try-catch
 	try {
