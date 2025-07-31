@@ -71,6 +71,9 @@ public:
 		request.set(net::http::field::user_agent, BOOST_BEAST_VERSION_STRING);
 		request.set(net::http::field::host, host);
 		request.target(target);
+		request.set(net::http::field::accept, "*/*");
+
+		//std::cout << "\n" << request.base() << "\n";
 
 		// Look up the domain name
 		resolver.async_resolve(host, port, std::bind_front(&Session::OnResolve, shared::shared_from_this())); // queue async I/O operation

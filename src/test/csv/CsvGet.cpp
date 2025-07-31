@@ -630,6 +630,9 @@ void OpenbudgetGet(std::string_view request, auto &response)
 		request.set(net::http::field::host      , API_HOST);
 		request.keep_alive(false);
 		request.target(target);
+		request.set(net::http::field::accept    , "*/*");
+
+		//std::cout << "\n" << request.base() << "\n";
 
 		const auto      resolved = resolver.resolve(API_HOST, "80");
 		tstream.connect(resolved);
