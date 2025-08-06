@@ -15,5 +15,6 @@ public:
 
 void ReadCsvQ();
 void CsvFilterT(rapidcsv::Document *csv_ptr = nullptr); // ImGui window with a `.csv` data convertd into table view
+void ConvertCsv();
 
 }

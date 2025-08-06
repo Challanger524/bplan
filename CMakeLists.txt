@@ -99,6 +99,10 @@ target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE
   "${CMAKE_SOURCE_DIR}/deps/sqlite_orm/include/sqlite_orm"
 ) # rooted dirs will be treated as SYSTEM, even if opposite stated explicitly (with: -I)
 
+if (MINGW AND CMAKE_CXX_COMPILER_ID STREQUAL GNU)
+  target_link_libraries(${PROJECT_NAME} stdc++exp) # std:: print, println #? new preset var ${_LINK_LIBRARIES_} ?
+endif()
+
 
 # # Add: custom build targets # #
 

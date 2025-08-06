@@ -23,6 +23,7 @@ void Test::Menu() {
 			im::SeparatorText("one-run");
 			if (im::MenuItem("console: income Chernihiv 23 quarter"))           { test::ReadCsvQ(); }
 			if (im::MenuItem("console: income Chernihiv 23 month (filter: T)")) { test::CsvFilterT(); }
+			if (im::MenuItem("console: income Chernihiv 23 quarter (convert)")) { test::ConvertCsv(); }
 			im::SeparatorText("loop");
 			if (im::MenuItem("imgui  : income Chernihiv 23 month (table)"))     { this->Switch(CSV_TABLE); }
 			if (im::MenuItem("network: boost::beast download budget"     ))     { this->Switch(CSV_GET  ); }
