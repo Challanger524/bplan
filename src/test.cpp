@@ -10,7 +10,7 @@
 
 namespace bplan {
 
-inline bool MenuItem(const char *label, bool *p_selected = nullptr) { return im::MenuItem(label, nullptr, p_selected); } // ImGui wrapper
+inline bool MenuItem(const char *label, bool selected = false) { return im::MenuItem(label, nullptr, selected); } // ImGui wrapper
 
 } // namespace bplan
 
@@ -25,9 +25,9 @@ void Test::Menu() {
 			if (im::MenuItem("console: income Chernihiv 23 month (filter: T)")) { test::CsvFilterT(); }
 			if (im::MenuItem("console: income Chernihiv 23 quarter (convert)")) { test::ConvertCsv(); }
 			im::SeparatorText("loop");
-			if (im::MenuItem("imgui  : income Chernihiv 23 month (table)"))     { this->Switch(CSV_TABLE); }
-			if (im::MenuItem("network: boost::beast download budget"     ))     { this->Switch(CSV_GET  ); }
-			if (im::MenuItem("sql    : SQLite ORM"                       ))     { this->Switch(SQL_L_ORM); }
+			if (bp::MenuItem("imgui  : income Chernihiv 23 month (table)", this->Enabled(CSV_TABLE))) { this->Switch(CSV_TABLE); }
+			if (bp::MenuItem("network: boost::beast download budget"     , this->Enabled(CSV_GET  ))) { this->Switch(CSV_GET  ); }
+			if (bp::MenuItem("sql    : SQLite ORM"                       , this->Enabled(SQL_L_ORM))) { this->Switch(SQL_L_ORM); }
 			im::Unindent();
 		}
 
@@ -40,6 +40,7 @@ void Test::operator()() {
 	for (const auto &t : tests) if (t) t->operator()();
 }
 
+bool Test::Enabled(const testsE test) const { return this->tests[test].operator bool(); }
 void Test::Enable(const testsE test) { this->Switch(test); }
 void Test::Switch(const testsE test)
 {

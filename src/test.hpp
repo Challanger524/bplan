@@ -21,6 +21,7 @@ public:
 
 	void operator()();
 
+	bool Enabled(testsE test) const;
 	void Enable(testsE test);
 	void Switch(testsE test);
 };
