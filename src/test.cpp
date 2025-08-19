@@ -49,7 +49,11 @@ void Test::Switch(const testsE test)
 		switch (test) {
 			case CSV_TABLE: this->tests[test] = std::make_unique<test::CsvTable>(); break;
 			case CSV_GET  : this->tests[test] = std::make_unique<test::CsvGet  >(); break;
+		#ifndef TEST_ODR_VIOLATION
+			case SQL_L_ORM: this->tests[test] = std::make_unique<test::sqlite::SqliteOrm>(); break;
+		#else
 			case SQL_L_ORM: this->tests[test] = std::make_unique<test::SqliteOrm>(); break;
+		#endif
 
 			default: assert(false); break;
 		}

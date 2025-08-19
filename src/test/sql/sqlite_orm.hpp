@@ -13,6 +13,9 @@
 
 namespace test {
 
+#ifndef TEST_ODR_VIOLATION
+namespace sqlite { // avoid ODR violation from same-named `struct Income` from ../sql/sqlite_orm.hpp. Very hard to trace and debug such implicit ODR stuff.
+#endif
 
 struct IncCodeName {
 	      int         id{-1};
@@ -51,5 +54,8 @@ public:
 	virtual void operator()() override;
 };
 
+#ifndef TEST_ODR_VIOLATION
+} // namespace
+#endif
 
 } // namespace test

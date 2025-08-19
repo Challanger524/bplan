@@ -21,6 +21,10 @@
 
 namespace test {
 
+#ifndef TEST_ODR_VIOLATION
+namespace sqlite { // avoid ODR violation from same-named `struct Income` from ../sql/sqlite_orm.hpp. Very hard to trace and debug such implicit ODR stuff.
+#endif
+
 
 namespace rcv = rapidcsv;
 using std::string;
@@ -302,6 +306,10 @@ public:
 	void UpdateTag() { RuleTag(price, tag); }
 };
 
+
+#ifndef TEST_ODR_VIOLATION
+} // namespace
+#endif
 
 } // namespace test
 

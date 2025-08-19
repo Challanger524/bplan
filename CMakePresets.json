@@ -65,6 +65,19 @@
       }
     },
     {
+      "name": "test-gcc-lto",
+      "displayName": "Test: GCC - LTO (ODR check)",
+      "description": "The only solid way to verify 'One Definition Rule (ODR)' violations. Does not complete linking (on MSYS2/mingw64/gcc), build fails with: lto1.exe: error: two or more sections for.. . `CMAKE_INTERPROCEDURAL_OPTIMIZATION` sets reqired compile&link flags: `-flto`, ..",
+      "inherits": "gcc-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "MinSizeRel",
+        "CMAKE_INTERPROCEDURAL_OPTIMIZATION": true,
+        "_FLAGS_COMPILE_2_": "-fmax-errors=0;-O0",
+        "_FLAGS_COMP_LINK_": "",
+        "_DEFINITIONS_": "TEST_ODR_VIOLATION"
+      }
+    },
+    {
       "name": "gcc-san",
       "displayName": "1. GCC - sanitize",
       "inherits": "gcc-base",
