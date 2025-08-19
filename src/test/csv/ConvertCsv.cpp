@@ -23,9 +23,11 @@
 namespace test {
 
 
-namespace { // avoid ODR violation from same-named `struct Income` from ../sql/sqlite_orm.hpp. Very hard to trace and debug such implicit ODR stuff.
-
 using std::string;
+
+#ifndef TEST_ODR_VIOLATION
+namespace { // avoid ODR violation from same-named `struct Income` from ../sql/sqlite_orm.hpp. Very hard to trace and debug such implicit ODR stuff.
+#endif
 
 struct Income {
 	string   REP_PERIOD{};
@@ -40,7 +42,9 @@ struct Income {
 	void println() const { std::println("{} {} {} {:.2f}", REP_PERIOD, FUND_TYP, COD_INCO, FAKT_AMT); }
 };
 
+#ifndef TEST_ODR_VIOLATION
 } // namespace
+#endif
 
 namespace    rcv = rapidcsv;
 namespace ranges = std::ranges       ;
