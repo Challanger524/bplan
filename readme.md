@@ -6,7 +6,7 @@
 
 Cross-platform application aiming to connect to openbudget.gov.ua using **public API** to get budget data shipped in **`.csv`** files to process them with **STL** and graphically view with **Dear ImGui**.
 
-`git` (`submodules`) `CMake` (`CMakePresets`) `vcpkg` `C++` `C++23` `STL` (`type traits` `concepts` `ranges` `locale` `chrono` `span`) `Boost` (`beast` `locale`) `Dear ImGui` `Rapidcsv` `SQLite` `SQLite ORM` `multicompliler` (`MSVC` `GCC` `Clang` `MSYS2`: `mingw64/gcc` `clang64/clang`) `cross-platform`(`Linux` `Windows` `MinGW` `MSYS2`) `EditorConfig`
+`git` (`submodules`) `CMake` (`CMakePresets`) `vcpkg` `C++` `C++23` `STL` (`type traits` `concepts` `ranges` `locale` `chrono` `span`) `Boost` (`beast` `locale`) `Dear ImGui` `Rapidcsv` `SQLite` `SQLite ORM` `SQL Server 2019` `odbc-cpp-wrapper` `multicompliler` (`MSVC` `GCC` `Clang` `MSYS2`: `mingw64/gcc` `clang64/clang`) `cross-platform`(`Linux` `Windows` `MinGW` `MSYS2`) `EditorConfig`
 
 ## Clone
 ``` shell
@@ -14,6 +14,7 @@ git clone --recurse --shallow-submodules "https://github.com/Challanger524/bplan
 ```
 
 ## Prerequisites
+- **ODBC** library + **SQL Server 2019**
 - **Boost** source path must be passed to CMake to build with `MSYS2`: `GCC` and `Clang`:
 
     <details><summary>examples</summary>

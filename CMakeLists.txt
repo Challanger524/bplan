@@ -62,6 +62,18 @@ set(SQLITE_ORM_ENABLE_CXX_20 ON CACHE BOOL "" FORCE)
 add_subdirectory("${CMAKE_SOURCE_DIR}/deps/sqlite_orm") # depends on 'SQLite' that must be visible to `find_package()`
 # https://discourse.cmake.org/t/correct-usage-of-findsqlite3-module-in-windows/174
 
+# Setup: odbc-cpp-wrapper (C++ Wrapper for ODBC) #
+if(MINGW)
+  set(ODBC_INCLUDE_DIR "" CACHE PATH "[MinGW] prevent '../Windows Kits/..' inclusion from VS dev env")
+endif()
+find_package(ODBC REQUIRED)
+file(GLOB_RECURSE ODBCCPP_SOURCE_FILES_ "${CMAKE_SOURCE_DIR}/deps/odbc-cpp-wrapper/src/*.cpp")
+add_library               (odbccpp STATIC ${ODBCCPP_SOURCE_FILES_})
+target_include_directories(odbccpp SYSTEM PUBLIC  "${CMAKE_SOURCE_DIR}/deps/odbc-cpp-wrapper/src")
+target_compile_definitions(odbccpp        PUBLIC  ODBC_STATIC)
+target_link_libraries     (odbccpp        PUBLIC  ODBC::ODBC)
+set_target_properties     (odbccpp PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED ON)
+
 # Setup: Boost:: #
 if(NOT EXISTS "${_BOOST_SOURCE_DIR_}/boost.png")
   message(FATAL_ERROR
@@ -92,7 +104,7 @@ endif()
 
 # # Apply: project dependencies # #
 
-target_link_libraries     (${PROJECT_NAME} OpenGL::GL glfw imgui sqlite_orm::sqlite_orm Boost::beast)
+target_link_libraries     (${PROJECT_NAME} OpenGL::GL glfw imgui sqlite_orm::sqlite_orm Boost::beast odbccpp)
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE
   "${CMAKE_SOURCE_DIR}/deps"
   "${CMAKE_SOURCE_DIR}/deps/rapidcsv/src"

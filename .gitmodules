@@ -11,3 +11,6 @@
 [submodule "sqlite_orm"]
 	path = deps/sqlite_orm
 	url = https://github.com/fnc12/sqlite_orm
+[submodule "odbc-cpp-wrapper"]
+	path = deps/odbc-cpp-wrapper
+	url = https://github.com/SAP/odbc-cpp-wrapper

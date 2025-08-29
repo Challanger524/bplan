@@ -17,6 +17,7 @@
 #include <iterator>
 #include <iostream>
 #include <algorithm>
+#include <exception>
 #include <type_traits>
 
 namespace test {
@@ -149,7 +150,7 @@ SqliteOrm::SqliteOrm() {
 			if (++c > FIRST_FEW) break;
 		}
 	}
-	catch(std::exception &e) { std::cerr << e.what() << '\n'; throw e; }
+	catch(std::exception &e) { std::cerr << e.what() << '\n'; throw std::runtime_error(__func__); }
 
 }
 
