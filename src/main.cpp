@@ -162,8 +162,7 @@ int main()
 	App app;
 
 #ifdef TESTING
-	//app.test.Enable(Test::CSV_GET);
-	test::ConvertCsv();
+	app.test.Enable(Test::SQL_ODBC_WRAP);
 #endif
 
 	//------------------------ main loop: loop -------------------------------

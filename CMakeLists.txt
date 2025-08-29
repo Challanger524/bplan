@@ -62,6 +62,15 @@ set(SQLITE_ORM_ENABLE_CXX_20 ON CACHE BOOL "" FORCE)
 add_subdirectory("${CMAKE_SOURCE_DIR}/deps/sqlite_orm") # depends on 'SQLite' that must be visible to `find_package()`
 # https://discourse.cmake.org/t/correct-usage-of-findsqlite3-module-in-windows/174
 
+# Setup: odbc-cpp-wrapper (C++ Wrapper for ODBC) #
+find_package(ODBC REQUIRED)
+file(GLOB_RECURSE src_files_ "${CMAKE_SOURCE_DIR}/deps/odbc-cpp-wrapper/src/*.cpp")
+target_sources            (${PROJECT_NAME}        PRIVATE  ${src_files_})
+target_compile_definitions(${PROJECT_NAME}        PRIVATE  ODBC_STATIC)
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE "${CMAKE_SOURCE_DIR}/deps/odbc-cpp-wrapper/src")
+target_link_libraries     (${PROJECT_NAME} ODBC::ODBC)
+unset(src_files_)
+
 # Setup: Boost:: #
 if(NOT EXISTS "${_BOOST_SOURCE_DIR_}/boost.png")
   message(FATAL_ERROR
