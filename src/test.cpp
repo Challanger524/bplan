@@ -2,6 +2,7 @@
 #include "test/csv/CsvTable.hpp"
 #include "test/csv/CsvGet.hpp"
 #include "test/sql/sqlite_orm.hpp"
+#include "test/sql/sql_server/odbc_wrap.hpp"
 
 #include <imgui.h>
 
@@ -28,6 +29,7 @@ void Test::Menu() {
 			if (bp::MenuItem("imgui  : income Chernihiv 23 month (table)", this->Enabled(CSV_TABLE))) { this->Switch(CSV_TABLE); }
 			if (bp::MenuItem("network: boost::beast download budget"     , this->Enabled(CSV_GET  ))) { this->Switch(CSV_GET  ); }
 			if (bp::MenuItem("sql    : SQLite ORM"                       , this->Enabled(SQL_L_ORM))) { this->Switch(SQL_L_ORM); }
+			if (bp::MenuItem("sql    : SQLite ORM"                       , this->Enabled(SQL_ODBC_WRAP))) { this->Switch(SQL_ODBC_WRAP); }
 			im::Unindent();
 		}
 
@@ -54,6 +56,8 @@ void Test::Switch(const testsE test)
 		#else
 			case SQL_L_ORM: this->tests[test] = std::make_unique<test::SqliteOrm>(); break;
 		#endif
+
+			case SQL_ODBC_WRAP : this->tests[test] = std::make_unique<test::odbc_wrap::SqlServer>(); break;
 
 			default: assert(false); break;
 		}
