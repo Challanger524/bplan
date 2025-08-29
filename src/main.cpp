@@ -118,7 +118,7 @@ int main()
 	//io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-	//io.IniFilename = nullptr;
+	io.IniFilename = nullptr;
 	//io.LogFilename = nullptr;
 
 	//ImGui::StyleColorsDark();
@@ -162,8 +162,7 @@ int main()
 	App app;
 
 #ifdef TESTING
-	//app.test.Enable(Test::CSV_GET);
-	test::ConvertCsv();
+	app.test.Enable(Test::SQL_ODBC_WRAP);
 #endif
 
 	//------------------------ main loop: loop -------------------------------

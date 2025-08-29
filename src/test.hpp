@@ -9,7 +9,7 @@
 
 class Test final {
 public:
-	enum testsE : size_t { CSV_TABLE, CSV_GET, SQL_L_ORM, TESTS_COUNT_ };
+	enum testsE : size_t { CSV_TABLE, CSV_GET, SQL_L_ORM, SQL_ODBC_WRAP, TESTS_COUNT_ };
 
 private:
 	std::array<std::unique_ptr<test::ITests>, TESTS_COUNT_> tests{}; // array of pointers to the tests
@@ -20,6 +20,8 @@ public:
 	void Menu();
 
 	void operator()();
+
+	void MenuItem(const char *label, Test::testsE test);
 
 	bool Enabled(testsE test) const;
 	void Enable(testsE test);
