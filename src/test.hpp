@@ -9,7 +9,7 @@
 
 class Test final {
 public:
-	enum testsE : size_t { CSV_TABLE, CSV_GET, SQL_L_ORM, SQL_ODBC_WRAP, TESTS_COUNT_ };
+	enum testsE : size_t { CSV_TABLE, CSV_GET, SQL_L_ORM, SQL_ODBC_WRAP, SQL_ODBC_NANO, TESTS_COUNT_ };
 
 private:
 	std::array<std::unique_ptr<test::ITests>, TESTS_COUNT_> tests{}; // array of pointers to the tests

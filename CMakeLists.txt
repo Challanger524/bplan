@@ -5,6 +5,10 @@ project (bplan  DESCRIPTION  "Budget Planner (UA)"
                 LANGUAGES     CXX)
 
 
+# # # List : options # # #
+
+#option(BUILD_SHARED_LIBS "Build using shared libraries" NO)
+
 # # # Setup: project # # #
 
 add_executable            (${PROJECT_NAME})
@@ -62,10 +66,12 @@ set(SQLITE_ORM_ENABLE_CXX_20 ON CACHE BOOL "" FORCE)
 add_subdirectory("${CMAKE_SOURCE_DIR}/deps/sqlite_orm") # depends on 'SQLite' that must be visible to `find_package()`
 # https://discourse.cmake.org/t/correct-usage-of-findsqlite3-module-in-windows/174
 
-# Setup: odbc-cpp-wrapper (C++ Wrapper for ODBC) #
+## Pre-Setup: ODBC ##
 if(MINGW)
   set(ODBC_INCLUDE_DIR "" CACHE PATH "[MinGW] prevent '../Windows Kits/..' inclusion from VS dev env")
 endif()
+
+# Setup: odbc-cpp-wrapper (C++ Wrapper for ODBC) #
 find_package(ODBC REQUIRED)
 file(GLOB_RECURSE ODBCCPP_SOURCE_FILES_ "${CMAKE_SOURCE_DIR}/deps/odbc-cpp-wrapper/src/*.cpp")
 add_library               (odbccpp STATIC ${ODBCCPP_SOURCE_FILES_})
@@ -73,6 +79,11 @@ target_include_directories(odbccpp SYSTEM PUBLIC  "${CMAKE_SOURCE_DIR}/deps/odbc
 target_compile_definitions(odbccpp        PUBLIC  ODBC_STATIC)
 target_link_libraries     (odbccpp        PUBLIC  ODBC::ODBC)
 set_target_properties     (odbccpp PROPERTIES CXX_STANDARD 11 CXX_STANDARD_REQUIRED ON)
+
+# Setup: nanodbc (C++ wrapper for the native C ODBC API) #
+set(NANODBC_ENABLE_UNICODE NO CACHE BOOL "" FORCE)
+set(NANODBC_ENABLE_BOOST   NO CACHE BOOL "" FORCE) # depends on NANODBC_ENABLE_UNICODE
+add_subdirectory("deps/nanodbc")
 
 # Setup: Boost:: #
 if(NOT EXISTS "${_BOOST_SOURCE_DIR_}/boost.png")
@@ -104,7 +115,7 @@ endif()
 
 # # Apply: project dependencies # #
 
-target_link_libraries     (${PROJECT_NAME} OpenGL::GL glfw imgui sqlite_orm::sqlite_orm Boost::beast odbccpp)
+target_link_libraries     (${PROJECT_NAME} OpenGL::GL glfw imgui sqlite_orm::sqlite_orm Boost::beast odbccpp nanodbc)
 target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE
   "${CMAKE_SOURCE_DIR}/deps"
   "${CMAKE_SOURCE_DIR}/deps/rapidcsv/src"
