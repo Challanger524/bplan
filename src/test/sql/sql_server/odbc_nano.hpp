@@ -1,13 +1,12 @@
-#ifndef TEST_SQL_SQL_SERVER_ODBC_WRAP_HPP_
-#define TEST_SQL_SQL_SERVER_ODBC_WRAP_HPP_
+#ifndef TEST_SQL_SQL_SERVER_ODBC_NANO_HPP_
+#define TEST_SQL_SQL_SERVER_ODBC_NANO_HPP_
 #else  //  include anti-guard
 #error "re-include of non-library header"
 #endif //  https://stackoverflow.com/a/32628153/11753532
 
 #include "test/tests.hpp"
 
-#include <odbc/Environment.h>
-#include <odbc/Connection.h>
+#include <nanodbc/nanodbc.h>
 
 #include <memory>
 #include <chrono>
@@ -15,7 +14,7 @@
 #include <string>
 
 
-namespace test::odbc_wrap { // "odbc-cpp-wrapper"
+namespace test::odbc_nano { // "nanodbc"
 
 
 struct IncCodeName {
@@ -29,9 +28,9 @@ struct Income {
 	std::chrono::year_month REP_PERIOD{};
 	uint32_t COD_INCO{};
 	 int     NAME_INC{}; // foreign key (int)
-	money_t   ZAT_AMT{};
-	money_t PLANS_AMT{};
-	money_t  FAKT_AMT{};
+	double   ZAT_AMT{};
+	double PLANS_AMT{};
+	double  FAKT_AMT{};
 
 public:
 	int  GetYear () const { return REP_PERIOD. year().operator          int(); }
@@ -42,8 +41,7 @@ public:
 
 class SqlServer : public ITests
 {
-	odbc::EnvironmentRef env; //? needed (ref counter)?
-	odbc:: ConnectionRef con;
+	nanodbc::connection con{};
 
 	std::vector<IncCodeName> codeNames{};
 	std::vector<Income     >   incomes{};

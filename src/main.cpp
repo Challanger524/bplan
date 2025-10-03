@@ -162,7 +162,7 @@ int main()
 	App app;
 
 #ifdef TESTING
-	app.test.Enable(Test::SQL_ODBC_WRAP);
+	app.test.Enable(Test::SQL_ODBC_NANO);
 #endif
 
 	//------------------------ main loop: loop -------------------------------

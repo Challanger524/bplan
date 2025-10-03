@@ -3,6 +3,7 @@
 #include "test/csv/CsvGet.hpp"
 #include "test/sql/sqlite_orm.hpp"
 #include "test/sql/sql_server/odbc_wrap.hpp"
+#include "test/sql/sql_server/odbc_nano.hpp"
 
 #include <imgui.h>
 
@@ -67,6 +68,7 @@ void Test::Switch(const testsE test)
 			#endif
 
 				case SQL_ODBC_WRAP : this->tests[test] = std::make_unique<test::odbc_wrap::SqlServer>(); break;
+				case SQL_ODBC_NANO : this->tests[test] = std::make_unique<test::odbc_nano::SqlServer>(); break;
 
 				default: assert(false); break;
 			}

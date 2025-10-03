@@ -14,3 +14,6 @@
 [submodule "odbc-cpp-wrapper"]
 	path = deps/odbc-cpp-wrapper
 	url = https://github.com/SAP/odbc-cpp-wrapper
+[submodule "nanodbc"]
+	path = deps/nanodbc
+	url = https://github.com/nanodbc/nanodbc
